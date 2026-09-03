@@ -166,10 +166,22 @@ const DROP_ATTRIBUTES = [
 ];
 
 export function sanitiseBody(html, { resolveTitle, slugOf = slugFor }) {
-  const root = parse(html, { blockTextElements: { script: false, style: false } });
+  let root = parse(html, { blockTextElements: { script: false, style: false } });
 
   for (const selector of CHROME_SELECTORS) {
     for (const node of root.querySelectorAll(selector)) node.remove();
+  }
+
+  // Unwrap the source's own parser-output wrapper.
+  //
+  // Not cosmetic: the reader spaces an article with `.ok-article__body > * + *`,
+  // and while every paragraph sits inside a single wrapper div that selector
+  // matches exactly one element. The result renders as a wall of text with
+  // correct-looking CSS, which is the hardest kind of layout bug to see in a
+  // diff and the easiest to see on a phone.
+  const wrapper = root.childNodes.filter((node) => node.nodeType === 1);
+  if (wrapper.length === 1 && wrapper[0].rawTagName === 'div') {
+    root = parse(wrapper[0].innerHTML, { blockTextElements: { script: false, style: false } });
   }
 
   // Headings: the source embeds decorative images inside heading text, e.g.
@@ -260,6 +272,14 @@ export function sanitiseBody(html, { resolveTitle, slugOf = slugFor }) {
   // Re-apply the two classes the renderer itself needs.
   for (const wrap of root.querySelectorAll('div')) {
     if (wrap.innerHTML.trim().startsWith('<table')) wrap.setAttribute('class', 'ok-tablewrap');
+  }
+
+  // A paragraph holding only line breaks is the source's spacing hack, and it
+  // renders here as an unexplained gap because this layout spaces blocks itself.
+  for (const paragraph of root.querySelectorAll('p')) {
+    if (paragraph.text.trim() === '' && paragraph.querySelectorAll('img, span, a').length === 0) {
+      paragraph.remove();
+    }
   }
 
   const cleaned = root.innerHTML
