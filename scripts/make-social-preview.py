@@ -20,7 +20,7 @@ INK    = token("ok-ink", "#1f1b16")
 MUTED  = token("ok-ink-muted", "#5c5348")
 RULE   = token("ok-rule", "#ddd5c8")
 ACCENT = token("ok-accent", "#8a5a2b")
-CATS = [token(f"ok-cat-{n}", "#888888") for n in
+CATS = [token(f"ok-category-{n}", "#888888") for n in
         ("ores","trees","tools","items","locations","structures","logic","vinyls","vehicles","events","npcs")]
 
 W, H = 1200, 630

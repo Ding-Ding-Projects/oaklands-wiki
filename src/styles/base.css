@@ -116,7 +116,7 @@ a:hover { color: var(--ok-accent-hover); text-decoration-color: currentColor; }
   inline-size: 1.5rem;
   block-size: 1.5rem;
   border-radius: var(--ok-radius-sm);
-  background: linear-gradient(135deg, var(--ok-cat-ores), var(--ok-cat-trees));
+  background: linear-gradient(135deg, var(--ok-category-ores), var(--ok-category-trees));
   flex: none;
 }
 .ok-topbar__nav { margin-inline-start: auto; display: flex; gap: var(--ok-space-1); }
@@ -247,13 +247,13 @@ main { padding-block: var(--ok-space-6) var(--ok-space-8); }
 }
 .ok-tile:hover {
   transform: translateY(-2px);
-  border-color: var(--ok-cat-accent, var(--ok-rule-strong));
+  border-color: var(--ok-category-accent, var(--ok-rule-strong));
   box-shadow: var(--ok-shadow-lifted), var(--ok-edge);
 }
 .ok-tile__art {
   aspect-ratio: 4 / 3;
   background:
-    linear-gradient(160deg, color-mix(in srgb, var(--ok-cat-accent, var(--ok-rule-strong)) 26%, transparent), transparent 70%),
+    linear-gradient(160deg, color-mix(in srgb, var(--ok-category-accent, var(--ok-rule-strong)) 26%, transparent), transparent 70%),
     var(--ok-paper-sunken);
   display: grid;
   place-items: center;

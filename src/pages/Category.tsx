@@ -8,11 +8,11 @@ export type CategoryMember = { title: string; slug: string; infoboxType: string 
 export type CategoryRecord = { name: string; slug: string; count: number; articles: CategoryMember[] };
 
 const ACCENTS: Record<string, string> = {
-  Ores: 'var(--ok-cat-ores)', Trees: 'var(--ok-cat-trees)', Tools: 'var(--ok-cat-tools)',
-  Items: 'var(--ok-cat-items)', Locations: 'var(--ok-cat-locations)',
-  Structures: 'var(--ok-cat-structures)', Logic: 'var(--ok-cat-logic)',
-  Vinyls: 'var(--ok-cat-vinyls)', Vehicles: 'var(--ok-cat-vehicles)',
-  Events: 'var(--ok-cat-events)', NPCs: 'var(--ok-cat-npcs)',
+  Ores: 'var(--ok-category-ores)', Trees: 'var(--ok-category-trees)', Tools: 'var(--ok-category-tools)',
+  Items: 'var(--ok-category-items)', Locations: 'var(--ok-category-locations)',
+  Structures: 'var(--ok-category-structures)', Logic: 'var(--ok-category-logic)',
+  Vinyls: 'var(--ok-category-vinyls)', Vehicles: 'var(--ok-category-vehicles)',
+  Events: 'var(--ok-category-events)', NPCs: 'var(--ok-category-npcs)',
 };
 
 export function Category({ category }: { category: CategoryRecord }) {

@@ -120,12 +120,63 @@ Measured on the live site rather than asserted:
 | Browse filtering | 1,063 rows narrow to 87 on "C", starting at Cactus |
 | Theme control | present and functional on every page, including the script-free article pages |
 
+## Side by side with the source
+
+The source wiki being hard to read is why this project exists, so "visibly different" is a
+requirement with its own inventory rows rather than a side effect of choosing nice fonts.
+Both columns below are the same article, captured in the same run, at the same tuple:
+390x844, device scale 2, mobile.
+
+| | This site | The source wiki |
+|---|---|---|
+| **Copper** | ![Copper on this site: the title and Key facts card fill the phone screen, prose starts immediately below](evidence/differentiation/Copper-ours.png) | ![Copper on the source wiki: an icon sidebar down the left, a large empty advertising slot across the top, and the article pushed off to the right](evidence/differentiation/Copper-source.png) |
+| **Oak** | ![Oak on this site: text headings, tabular figures, no decorative icons in headings](evidence/differentiation/Oak-ours.png) | ![Oak on the source wiki: headings carrying inline icon images, content cut off at the right edge](evidence/differentiation/Oak-source.png) |
+
+At a phone width the source puts a persistent icon rail and an advertising slot ahead of
+the article, and the page itself scrolls sideways. This site starts the article at the top
+of the viewport, and the body never scrolls sideways at any of the five tested viewports.
+
+Nine such failings are recorded in [`design/differentiation-inventory.json`](design/differentiation-inventory.json),
+each naming what the source does, the counter-treatment here, and the paired capture that
+shows it. `npm run check:parity` fails when a row loses its evidence, so a claim cannot
+outlive the picture that backs it.
+
 ## Verification
 
 Guards assert properties of the **built output**, never of the configuration that produced
 it — a green build proves a file was written, never that it is correct. Every guard has been
 observed failing on purpose and passing again on restore; a guard nobody has watched fail
 proves nothing.
+
+The full method, every measured figure and the honest limits are in
+[`docs/delivery/verification.md`](docs/delivery/verification.md). In summary, measured on the
+deployed site across 8 surfaces x 5 viewports:
+
+```
+checked 40 surface/viewport combinations
+  horizontal overflow : 0
+  unnamed controls    : 0
+  images without alt  : 0
+  h1 count not 1      : 0
+  targets under 24px  : 0
+  elements overflowing: 0
+```
+
+| Command | Refuses |
+|---|---|
+| `npm run check:bundle` | A missing base path, a remote asset, injected `<style>`, absent OG tags, a drifted article count, a token declared twice, or a stale `dist/` |
+| `npm run check:elements` | A required element absent from the built markup |
+| `npm run check:completeness` | A feature row without its implementation, docs or evidence |
+| `npm run check:parity` | A reference screen or differentiation pair that is missing, incomplete or drifted |
+| `npm run check:wiki` | A corpus article with no generated wiki page, or an internal link that does not resolve |
+
+`npm run check:self-tests` breaks each guard on purpose, one field at a time, and requires
+every mutation to turn it red and the unmutated inventory to turn it green.
+
+Nothing runs in CI: by standing policy the release workflow runs no tests and no lint, and
+no code-quality verdict gates a release. The suites here run locally in the task that
+changes the code. The cost is stated plainly rather than hidden — a release can ship from a
+commit whose local checks would have failed.
 
 ## License
 

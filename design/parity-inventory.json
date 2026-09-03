@@ -1,0 +1,116 @@
+{
+  "recordType": "oaklands-wiki-design-parity-inventory",
+  "schemaVersion": 1,
+  "note": "Hand-written screen list captured from the real deployed site under a pinned tuple. A discovery scan cannot notice a screen that was never captured, so the list is explicit and the guard fails when a row has no reference file.",
+  "capturedAt": "2026-09-03T19:13:19.589Z",
+  "rows": [
+    {
+      "id": "home",
+      "route": "/",
+      "referenceFile": "design/reference/home.png",
+      "state": "default",
+      "theme": "dark",
+      "viewport": "390x844",
+      "scale": 2,
+      "mobile": true,
+      "sha256": "a4ffa9a2a94c4c0ee614d1518f560dc7d235917c9c10bd0447a20d1ebfc6f98e",
+      "bytes": 269596
+    },
+    {
+      "id": "home-desktop",
+      "route": "/",
+      "referenceFile": "design/reference/home-desktop.png",
+      "state": "default",
+      "theme": "dark",
+      "viewport": "1280x900",
+      "scale": 1,
+      "mobile": false,
+      "sha256": "15b98bcd6ba11c5532a470e54244d19fecf76f0b940ba2ac4d3668709eaa2ec1",
+      "bytes": 258725
+    },
+    {
+      "id": "browse",
+      "route": "/browse/",
+      "referenceFile": "design/reference/browse.png",
+      "state": "unfiltered",
+      "theme": "dark",
+      "viewport": "390x844",
+      "scale": 2,
+      "mobile": true,
+      "sha256": "ae56e1d7b0b5c9fc07765e7ba623ec961dae30926965cb7d91fe5730bea74feb",
+      "bytes": 213162
+    },
+    {
+      "id": "compare",
+      "route": "/compare/",
+      "referenceFile": "design/reference/compare.png",
+      "state": "objects table",
+      "theme": "dark",
+      "viewport": "1280x900",
+      "scale": 1,
+      "mobile": false,
+      "sha256": "a10ed6a01502207c4e4e1d4cfe7fd606f939c786c63fedd80b8b81361fe0c875",
+      "bytes": 151661
+    },
+    {
+      "id": "logic",
+      "route": "/logic/",
+      "referenceFile": "design/reference/logic.png",
+      "state": "half adder starter",
+      "theme": "dark",
+      "viewport": "1280x900",
+      "scale": 1,
+      "mobile": false,
+      "sha256": "d086dd0306377dd6ce37225424a90d6ba126859a0afb4442d8eeccf5d18afee5",
+      "bytes": 158744
+    },
+    {
+      "id": "docs",
+      "route": "/docs/",
+      "referenceFile": "design/reference/docs.png",
+      "state": "documentation tab",
+      "theme": "dark",
+      "viewport": "1280x900",
+      "scale": 1,
+      "mobile": false,
+      "sha256": "541174bc3a517017f3d00ee43ce671d6ce46ed289c07c8d9dfc5ce46623720f9",
+      "bytes": 188314
+    },
+    {
+      "id": "article",
+      "route": "/wiki/Copper/",
+      "referenceFile": "design/reference/article.png",
+      "state": "default",
+      "theme": "dark",
+      "viewport": "390x844",
+      "scale": 2,
+      "mobile": true,
+      "sha256": "8488aef95c3f110752044918fb94155df1d39c65c10528973654aef32cefccca",
+      "bytes": 385401
+    },
+    {
+      "id": "category",
+      "route": "/category/Ores/",
+      "referenceFile": "design/reference/category.png",
+      "state": "unfiltered",
+      "theme": "dark",
+      "viewport": "390x844",
+      "scale": 2,
+      "mobile": true,
+      "sha256": "cb70e0afbceec7b2f72eee67e72c8342abf88c45ca47ece22127ade4c9467804",
+      "bytes": 220872
+    },
+    {
+      "id": "about",
+      "route": "/about/",
+      "referenceFile": "design/reference/about.png",
+      "state": "default",
+      "theme": "dark",
+      "viewport": "390x844",
+      "scale": 2,
+      "mobile": true,
+      "sha256": "1ed5a6c7d93168f0ed53d8b14502c008b32b62ff685af3e80f948b295e5d3804",
+      "bytes": 297608
+    }
+  ]
+}

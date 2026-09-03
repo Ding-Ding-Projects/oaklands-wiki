@@ -1,0 +1,63 @@
+{
+  "recordType": "oaklands-wiki-differentiation-inventory",
+  "schemaVersion": 1,
+  "note": "The source wiki being hard to read is the reason this project exists, so 'visibly different from it' is a requirement with its own rows rather than a side effect of choosing nice fonts. Every failing below was observed in the live source; every row names its counter-treatment and the paired capture that shows it. Reviewer opinion does not close a row.",
+  "capturedAt": "2026-09-03",
+  "tuple": "390x844, deviceScaleFactor 2, mobile, same article, both sides",
+  "rows": [
+    {
+      "id": "D-001",
+      "sourceDoes": "At a 390px phone viewport the article is pushed off to the right behind a persistent icon sidebar and a large advertising slot; the page itself scrolls sideways.",
+      "weDo": "No sidebar, no advertising, nothing third-party. The article starts at the top of the viewport and the page body never scrolls sideways — asserted at five viewports by scripts/verify-built-site.mjs.",
+      "evidence": ["evidence/differentiation/Copper-source.png", "evidence/differentiation/Copper-ours.png"]
+    },
+    {
+      "id": "D-002",
+      "sourceDoes": "The front page is a centred wall of giant image buttons plus an embedded chat widget, with no reading structure.",
+      "weDo": "A category grid with live article counts and a factual introduction. No embeds.",
+      "evidence": ["design/reference/home.png"]
+    },
+    {
+      "id": "D-003",
+      "sourceDoes": "The infobox is a right-floating aside that overflows a narrow screen.",
+      "weDo": "A Key facts card that sits above the prose on a phone and beside it when there is room.",
+      "evidence": ["evidence/differentiation/Copper-ours.png", "design/reference/article.png"]
+    },
+    {
+      "id": "D-004",
+      "sourceDoes": "Every heading carries an mw-editsection pencil and a sign-in link.",
+      "weDo": "Stripped at import. Headings are headings, and scripts/build-articles.mjs refuses to write a body containing source chrome.",
+      "evidence": ["evidence/differentiation/Copper-ours.png"]
+    },
+    {
+      "id": "D-005",
+      "sourceDoes": "Headings embed decorative images as icons, so a heading reads '[picture of a dollar] Selling Price'.",
+      "weDo": "Text headings. Decorative art inside a heading is removed; meaningful art is kept with real alt text.",
+      "evidence": ["evidence/differentiation/Oak-source.png", "evidence/differentiation/Oak-ours.png"]
+    },
+    {
+      "id": "D-006",
+      "sourceDoes": "Prices are signalled by an inline colour span, so colour is the only carrier.",
+      "weDo": "Tabular lining numerals with aligned units in the Key facts card. Colour is never the only signal.",
+      "evidence": ["evidence/differentiation/Copper-ours.png"]
+    },
+    {
+      "id": "D-007",
+      "sourceDoes": "Line length is unbounded on a wide screen.",
+      "weDo": "The prose column is capped near 68 characters, measured from computed styles on the running page rather than asserted.",
+      "evidence": ["evidence/verification/accessibility.json", "design/reference/home-desktop.png"]
+    },
+    {
+      "id": "D-008",
+      "sourceDoes": "Facts live inside each article's own template, so no reader can compare items across articles.",
+      "weDo": "Seventeen sortable comparison tables built from typed infobox records — a view the source cannot produce at all.",
+      "evidence": ["design/reference/compare.png"]
+    },
+    {
+      "id": "D-009",
+      "sourceDoes": "Documents logic components in prose; a reader can learn what a gate does but cannot try one.",
+      "weDo": "A logic lab that builds and runs circuits from those same documented parts.",
+      "evidence": ["design/reference/logic.png"]
+    }
+  ]
+}

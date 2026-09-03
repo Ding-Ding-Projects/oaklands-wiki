@@ -8,6 +8,7 @@
  * link target at the first unescaped `)`.
  */
 import { readdir, readFile } from 'node:fs/promises';
+import { findReserved, reservedCount } from './lib/reserved-terms.mjs';
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
@@ -54,12 +55,16 @@ for (const file of files) {
   }
 }
 
-// A public record carries no private vocabulary, ever.
-const FORBIDDEN = /\b(?:Oak Kay|Gerk Tong Hui|Day Teet Hui|poke guy|Shek Q|dew(?:ed|ing)? hui)\b/i;
+// A public record carries no working shorthand, ever — and a guard that enforced
+// that by listing the phrases here would publish them itself, which is exactly
+// the failure it exists to prevent. The list is one-way instead; see
+// scripts/lib/reserved-terms.mjs. A hit is reported by digest, never by phrase.
+if (reservedCount === 0) failures.push('the reserved-phrase set is empty — this check is not checking anything');
 for (const file of files) {
   const text = await readFile(path.join(WIKI, file), 'utf8');
-  const hit = FORBIDDEN.exec(text);
-  if (hit) failures.push(`${file}: contains "${hit[0]}", which must never reach a public record`);
+  for (const hit of findReserved(text)) {
+    failures.push(`${file}: contains a reserved phrase (${hit.words}-word, digest ${hit.digest}) that must never reach a public record`);
+  }
 }
 
 if (links === 0) failures.push('found no internal links to check — the link scan is not working');

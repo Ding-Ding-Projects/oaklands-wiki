@@ -169,10 +169,8 @@
     "horizontalOverflow": false,
     "smallTargets": [],
     "smallTargetCount": 0,
-    "overflowingElements": [
-      "ul.ok-rows 294>288"
-    ],
-    "overflowingCount": 1,
+    "overflowingElements": [],
+    "overflowingCount": 0,
     "unnamedControls": [],
     "unnamedControlCount": 0,
     "imagesWithoutAlt": 0,

@@ -23,7 +23,10 @@
   /* ---- Typography ------------------------------------------------------ */
   /* One contemporary variable-weight sans across the whole product. A display
      serif reads as a book; this is meant to read as software. */
-  --ok-font-body: "Inter var", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  /* "Inter" and "JetBrains Mono" are vendored under public/fonts and declared by
+     the generated fonts.css. The rest of each stack is the fallback used while a
+     subset loads, or if the vendored file is ever unavailable. */
+  --ok-font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
   --ok-font-display: var(--ok-font-body);
   --ok-font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
 
@@ -95,18 +98,18 @@
   --ok-negative: #ff7a6b;
 
   /* ---- Category identity, from real Oaklands material tones ------------ */
-  --ok-cat-ores: #e08a4e;
-  --ok-cat-trees: #7fc06a;
-  --ok-cat-tools: #74a8d4;
-  --ok-cat-items: #e5b657;
-  --ok-cat-locations: #9aa4b8;
-  --ok-cat-vinyls: #b98ae0;
-  --ok-cat-vehicles: #e58a63;
-  --ok-cat-structures: #c0b09a;
-  --ok-cat-events: #ef7d90;
-  --ok-cat-logic: #5cc4c9;
-  --ok-cat-npcs: #d9968f;
-  --ok-cat-badges: #e0c05e;
+  --ok-category-ores: #e08a4e;
+  --ok-category-trees: #7fc06a;
+  --ok-category-tools: #74a8d4;
+  --ok-category-items: #e5b657;
+  --ok-category-locations: #9aa4b8;
+  --ok-category-vinyls: #b98ae0;
+  --ok-category-vehicles: #e58a63;
+  --ok-category-structures: #c0b09a;
+  --ok-category-events: #ef7d90;
+  --ok-category-logic: #5cc4c9;
+  --ok-category-npcs: #d9968f;
+  --ok-category-badges: #e0c05e;
 
   /* ---- Shape: modern means generous radii, not hairline corners -------- */
   --ok-radius-sm: 6px;
@@ -159,18 +162,18 @@
   --ok-caution: #8a6512;
   --ok-negative: #b03528;
 
-  --ok-cat-ores: #a75c22;
-  --ok-cat-trees: #3f7a2c;
-  --ok-cat-tools: #35688f;
-  --ok-cat-items: #8a6512;
-  --ok-cat-locations: #545c6b;
-  --ok-cat-vinyls: #71449a;
-  --ok-cat-vehicles: #a24b26;
-  --ok-cat-structures: #6d6252;
-  --ok-cat-events: #a83049;
-  --ok-cat-logic: #14707a;
-  --ok-cat-npcs: #8d514b;
-  --ok-cat-badges: #866412;
+  --ok-category-ores: #a75c22;
+  --ok-category-trees: #3f7a2c;
+  --ok-category-tools: #35688f;
+  --ok-category-items: #8a6512;
+  --ok-category-locations: #545c6b;
+  --ok-category-vinyls: #71449a;
+  --ok-category-vehicles: #a24b26;
+  --ok-category-structures: #6d6252;
+  --ok-category-events: #a83049;
+  --ok-category-logic: #14707a;
+  --ok-category-npcs: #8d514b;
+  --ok-category-badges: #866412;
 
   --ok-shadow: 0 1px 2px rgba(16, 20, 28, 0.06), 0 8px 24px -14px rgba(16, 20, 28, 0.22);
   --ok-shadow-lifted: 0 2px 6px rgba(16, 20, 28, 0.09), 0 18px 44px -18px rgba(16, 20, 28, 0.3);

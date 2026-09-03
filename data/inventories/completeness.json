@@ -168,7 +168,25 @@
     {
       "id": "F-015",
       "title": "Source-differentiation rows closed by side-by-side captures",
-      "state": "open"
+      "state": "built",
+      "implementation": [
+        "scripts/capture-evidence.mjs",
+        "design/differentiation-inventory.json"
+      ],
+      "surfaces": [
+        "scripts/check-parity.mjs"
+      ],
+      "evidence": [
+        "evidence/differentiation/Copper-ours.png",
+        "evidence/differentiation/Copper-source.png",
+        "evidence/differentiation/Oak-ours.png",
+        "evidence/differentiation/Oak-source.png",
+        "evidence/differentiation/pairs.json"
+      ],
+      "docs": [
+        "docs/standards/design-language.md"
+      ],
+      "note": "Nine named failings of the source, each with its counter-treatment and a paired capture taken at one identical tuple (390x844, scale 2, mobile). Reviewer opinion does not close a row; scripts/check-parity.mjs fails when a pair is missing."
     },
     {
       "id": "F-016",
@@ -324,12 +342,41 @@
     {
       "id": "F-031",
       "title": "Accessibility and responsive sizing verified on the built site",
-      "state": "open"
+      "state": "built",
+      "implementation": [
+        "scripts/verify-built-site.mjs"
+      ],
+      "surfaces": [
+        "src/styles/base.css",
+        "src/styles/elements.css",
+        "src/styles/chrome.css"
+      ],
+      "evidence": [
+        "evidence/verification/accessibility.json"
+      ],
+      "docs": [
+        "docs/delivery/verification.md"
+      ],
+      "note": "8 surfaces x 5 viewports (320/390/768/1280 at scale 1 and 2), measured on the deployed site rather than read from the stylesheet: 0 horizontal overflow, 0 unnamed controls, 0 images without alt, 0 pages without exactly one h1, 0 targets under 24px, 0 overflowing elements."
     },
     {
       "id": "F-032",
       "title": "Design-reference parity inventory and guard",
-      "state": "open"
+      "state": "built",
+      "implementation": [
+        "scripts/check-parity.mjs",
+        "design/parity-inventory.json"
+      ],
+      "surfaces": [
+        "scripts/capture-evidence.mjs"
+      ],
+      "evidence": [
+        "design/reference/"
+      ],
+      "docs": [
+        "docs/standards/design-language.md"
+      ],
+      "note": "Nine hand-written reference screens, each pinned to a complete tuple (route, state, theme, viewport, scale) and digest-locked. The guard is proved red-then-green by eight mutations via --self-test."
     },
     {
       "id": "F-033",
