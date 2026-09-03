@@ -1,0 +1,77 @@
+{
+  "recordType": "oaklands-wiki-completeness-inventory",
+  "schemaVersion": 1,
+  "note": "Hand-written, one row per canonical feature. This list is NOT derived by scanning the tree: a guard that only validates the features it already found passes cleanly on a project that has none of them. A row is `built` only when every named artefact exists AND the feature is genuinely finished. Rows that are `open` are expected to be unbuilt and do not fail the guard; a `built` row missing any artefact does.",
+  "rows": [
+    {
+      "id": "F-001",
+      "title": "Running version and build provenance on the front screen",
+      "state": "built",
+      "implementation": ["src/lib/provenance.ts", "vite.config.ts"],
+      "surfaces": ["src/pages/Home.tsx", "src/pages/About.tsx", "src/components/Shell.tsx"],
+      "docs": ["docs/delivery/README.md"]
+    },
+    {
+      "id": "F-002",
+      "title": "Oaklands Reader design language, single guarded token source",
+      "state": "built",
+      "implementation": ["src/styles/tokens.css", "src/styles/base.css"],
+      "docs": ["docs/standards/design-language.md"],
+      "guards": ["scripts/check-static-bundle.mjs"]
+    },
+    {
+      "id": "F-003",
+      "title": "Prerendered routes with per-route Open Graph in served markup",
+      "state": "built",
+      "implementation": ["scripts/prerender.mjs", "data/routes.json"],
+      "guards": ["scripts/check-static-bundle.mjs"]
+    },
+    {
+      "id": "F-004",
+      "title": "Product-specific embed graphic, root master and served copy identical",
+      "state": "built",
+      "implementation": ["scripts/make-social-preview.py", "social-preview.png"],
+      "guards": ["scripts/check-static-bundle.mjs"]
+    },
+    {
+      "id": "F-005",
+      "title": "About surface: provenance, licensing, non-affiliation, takedown route",
+      "state": "built",
+      "implementation": ["src/pages/About.tsx", "src/lib/site-config.ts"]
+    },
+    {
+      "id": "F-006",
+      "title": "Corpus importer with a fail-closed robots policy preflight",
+      "state": "built",
+      "implementation": ["scripts/import-oaklands.mjs"],
+      "tests": ["scripts/test-robots.mjs"],
+      "docs": ["docs/import/source-policy.md"]
+    },
+    { "id": "F-007", "title": "Full 1,066-article corpus captured and committed", "state": "open" },
+    { "id": "F-008", "title": "Article routes, sanitisation, typed infobox extraction", "state": "open" },
+    { "id": "F-009", "title": "Per-article attribution: revision, contributors, timestamp, licence", "state": "open" },
+    { "id": "F-010", "title": "Redirects resolved; unresolved links never render as dead hrefs", "state": "open" },
+    { "id": "F-011", "title": "GitHub wiki mirror generated and pushed", "state": "open" },
+    { "id": "F-012", "title": "Category browse with per-surface search and anchored regex builder", "state": "open" },
+    { "id": "F-013", "title": "Comparison tables built from typed infobox records", "state": "open" },
+    { "id": "F-014", "title": "Browser-style tab strip, left-docked, with the four tab searches", "state": "open" },
+    { "id": "F-015", "title": "Source-differentiation rows closed by side-by-side captures", "state": "open" },
+    { "id": "F-016", "title": "English, Cantonese and bilingual language modes", "state": "open" },
+    { "id": "F-017", "title": "Both per-language funny-level sliders and the dialog emoji switch", "state": "open" },
+    { "id": "F-018", "title": "Appearance system, per-element editors, infinite colour picker", "state": "open" },
+    { "id": "F-019", "title": "Command palette on Ctrl+Shift+F with exact-element teleport", "state": "open" },
+    { "id": "F-020", "title": "Non-blocking notifications and a reviewable centre", "state": "open" },
+    { "id": "F-021", "title": "Per-element toy locks, unlock ladder, Support Tickets", "state": "open" },
+    { "id": "F-022", "title": "Renamed School mode and its shared unlock credential", "state": "open" },
+    { "id": "F-023", "title": "Narrator with per-language voice, rate and pitch selection", "state": "open" },
+    { "id": "F-024", "title": "Scheduled settings from local, HTTPS and Home Assistant sources", "state": "open" },
+    { "id": "F-025", "title": "Attention modes", "state": "open" },
+    { "id": "F-026", "title": "Local history, exports in every faithful format, bulk actions", "state": "open" },
+    { "id": "F-027", "title": "Local file converter and PDF tools", "state": "open" },
+    { "id": "F-028", "title": "Local authenticator, QR pairing, personal-vocabulary upload", "state": "open" },
+    { "id": "F-029", "title": "Release-backed media volumes and display variants", "state": "open" },
+    { "id": "F-030", "title": "Offline documentation, changelog viewer, status surface", "state": "open" },
+    { "id": "F-031", "title": "Accessibility and responsive sizing verified on the built site", "state": "open" },
+    { "id": "F-032", "title": "Design-reference parity inventory and guard", "state": "open" }
+  ]
+}
