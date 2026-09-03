@@ -41,6 +41,30 @@ only signal for a state; text or shape always accompanies it.
 
 **Density is the reader's choice**, alongside theme, fonts and per-element appearance.
 
+## No element renders at browser defaults
+
+The site emits no generic HTML. Every element it can produce gets a deliberate treatment in
+`src/styles/elements.css` — 65 of them, from `<sup>` and `<abbr>` through `<table>`,
+`<details>`, `<input type="range">` and `<meter>`.
+
+This matters more here than in a typical site, because most of those elements do not come
+from hand-written markup at all: they arrive inside imported wiki HTML. An unstyled
+`<blockquote>` or `<dl>` on one article out of a thousand looks to a reader exactly like the
+stylesheet failed to load, and nobody previews a thousand articles.
+
+Eleven elements are **deliberately left to inherit**, each with its reason recorded in the
+guard rather than silently skipped — `<div>` and `<span>` have no default appearance to
+override, `<br>` has no box, and `<tbody>` is a row-grouping box whose rows carry the
+striping and whose cells carry the borders. Styling it directly would be a no-op written
+only to satisfy a check, which is worse than an honest exemption.
+
+`scripts/check-elements.mjs` enforces this against a **hand-written list**. A guard that
+collected the selectors already present and checked they were well-formed would pass cleanly
+on a stylesheet that styles nothing — it never looks for what is missing. It also requires a
+**bare type selector**: when it was first run it correctly refused `<thead>` and `<tbody>`,
+which had only descendant rules like `thead th`. A rule about a child is not a rule about the
+element, and that distinction is exactly what an existence check normally gets wrong.
+
 ## Enforcement
 
 `src/styles/tokens.css` is the only file permitted to declare `--ok-*` custom properties,

@@ -10,14 +10,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
-    "postbuild": "node scripts/check-static-bundle.mjs && node scripts/check-completeness.mjs",
+    "postbuild": "node scripts/check-static-bundle.mjs && node scripts/check-elements.mjs && node scripts/check-completeness.mjs",
     "preview": "vite preview",
     "import": "node scripts/import-oaklands.mjs",
     "generate:wiki": "node scripts/generate-wiki.mjs",
     "count:lines": "node scripts/count-lines.mjs",
     "check:bundle": "node scripts/check-static-bundle.mjs",
     "check:completeness": "node scripts/check-completeness.mjs",
-    "check:completeness:self-test": "node scripts/check-completeness.mjs --self-test"
+    "check:completeness:self-test": "node scripts/check-completeness.mjs --self-test",
+    "check:elements": "node scripts/check-elements.mjs",
+    "check:elements:self-test": "node scripts/check-elements.mjs --self-test"
   },
   "dependencies": {
     "react": "19.2.0",

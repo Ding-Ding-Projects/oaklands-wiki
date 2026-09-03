@@ -1,0 +1,377 @@
+/*
+ * Oaklands Reader — element layer.
+ *
+ * NOTHING on this site renders at browser defaults. Every element the site can
+ * emit — including every element that arrives inside imported wiki HTML, which
+ * is where raw tables, lists, blockquotes and figures come from — gets a
+ * deliberate treatment here.
+ *
+ * This is enforced, not trusted: `scripts/check-elements.mjs` holds a
+ * hand-written list of every element the renderer can produce and fails when one
+ * has no rule. A list is required because a guard that scans for elements it has
+ * already found cannot notice one that was never styled.
+ *
+ * Declares no --ok-* tokens; it only consumes them.
+ */
+
+/* ---- Reset: remove the browser's opinions before adding ours ---------- */
+
+blockquote, dl, dd, figure, pre, fieldset, menu {
+  margin: 0;
+  padding: 0;
+}
+
+/* ---- Inline semantics -------------------------------------------------- */
+
+strong, b { font-weight: var(--ok-weight-bold); }
+em, i, cite, var { font-style: italic; }
+cite { font-style: normal; color: var(--ok-ink-muted); }
+
+small { font-size: var(--ok-size-small); color: var(--ok-ink-muted); }
+
+mark {
+  background: color-mix(in srgb, var(--ok-caution) 22%, transparent);
+  color: inherit;
+  padding: 0.05em 0.25em;
+  border-radius: var(--ok-radius-sm);
+}
+
+del {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  color: var(--ok-ink-muted);
+}
+ins {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  background: color-mix(in srgb, var(--ok-positive) 14%, transparent);
+}
+
+/* Never rely on the browser's default super/subscript leading, which distorts
+   the line box and makes a paragraph of chemical names ripple. */
+sub, sup { font-size: 0.72em; line-height: 0; position: relative; vertical-align: baseline; }
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
+abbr[title] {
+  text-decoration: underline dotted;
+  text-underline-offset: 0.2em;
+  cursor: help;
+}
+
+q { quotes: '\201C' '\201D' '\2018' '\2019'; }
+
+time, data, address { font-style: normal; }
+
+/* ---- Code -------------------------------------------------------------- */
+
+code, kbd, samp, pre {
+  font-family: var(--ok-font-mono);
+  font-size: 0.9em;
+  font-variant-ligatures: none;
+}
+
+code {
+  background: var(--ok-paper-sunken);
+  border: var(--ok-border) solid var(--ok-rule);
+  border-radius: var(--ok-radius-sm);
+  padding: 0.1em 0.35em;
+  overflow-wrap: break-word;
+}
+
+pre {
+  background: var(--ok-paper-sunken);
+  border: var(--ok-border) solid var(--ok-rule);
+  border-radius: var(--ok-radius);
+  padding: var(--ok-space-4);
+  /* Wide code scrolls inside its own box; the page body never scrolls sideways. */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  line-height: var(--ok-leading-snug);
+}
+pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+
+kbd {
+  background: var(--ok-paper-raised);
+  border: var(--ok-border) solid var(--ok-rule-strong);
+  border-block-end-width: 2px;
+  border-radius: var(--ok-radius-sm);
+  padding: 0.1em 0.4em;
+  font-size: 0.85em;
+}
+
+samp { color: var(--ok-ink-muted); }
+
+/* ---- Block quotations --------------------------------------------------- */
+
+blockquote {
+  border-inline-start: 3px solid var(--ok-rule-strong);
+  padding-inline-start: var(--ok-space-4);
+  color: var(--ok-ink-muted);
+}
+blockquote > * + * { margin-block-start: var(--ok-space-3); }
+
+/* ---- Lists -------------------------------------------------------------- */
+
+ul, ol {
+  margin: 0;
+  padding-inline-start: var(--ok-space-5);
+}
+li { margin-block: var(--ok-space-1); padding-inline-start: var(--ok-space-1); }
+li::marker { color: var(--ok-ink-faint); }
+ul { list-style: square; }
+ol { list-style: decimal; }
+ol > li::marker { font-variant-numeric: tabular-nums lining-nums; }
+/* Nested lists step down rather than repeating the same mark. */
+ul ul { list-style: circle; }
+ul ul ul { list-style: disc; }
+ol ol { list-style: lower-alpha; }
+ul ul, ul ol, ol ul, ol ol { margin-block-start: var(--ok-space-1); }
+
+dl { display: grid; grid-template-columns: auto 1fr; gap: var(--ok-space-2) var(--ok-space-4); }
+dt { font-weight: var(--ok-weight-medium); color: var(--ok-ink-muted); }
+dd { margin: 0; }
+
+menu { list-style: none; }
+
+/* ---- Tables: reference objects, deliberately denser than prose ---------- */
+
+/* The wrapper scrolls, not the page. The article renderer wraps every table. */
+.ok-tablewrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: var(--ok-border) solid var(--ok-rule);
+  border-radius: var(--ok-radius);
+  background: var(--ok-paper-raised);
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  font-size: var(--ok-size-small);
+  line-height: var(--ok-leading-snug);
+  /* Figures line up column-to-column; this is what makes a table scannable. */
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+caption {
+  caption-side: top;
+  text-align: start;
+  padding: var(--ok-space-3) var(--ok-space-4);
+  color: var(--ok-ink-muted);
+  font-size: var(--ok-size-small);
+  border-block-end: var(--ok-border) solid var(--ok-rule);
+}
+
+th, td {
+  padding: var(--ok-space-3) var(--ok-space-4);
+  text-align: start;
+  vertical-align: top;
+  border-block-end: var(--ok-border) solid var(--ok-rule);
+}
+th {
+  font-weight: var(--ok-weight-medium);
+  color: var(--ok-ink-muted);
+  white-space: nowrap;
+  background: var(--ok-paper-sunken);
+}
+/* The header stays put while a long comparison table scrolls under it, which is
+   the difference between a table you can read and one you lose your place in. */
+thead {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+}
+thead th { border-block-end-color: var(--ok-rule-strong); }
+
+/* Zebra striping carries row continuity across a wide scrolling table without
+   adding another border. */
+tbody tr:nth-child(even) { background: color-mix(in srgb, var(--ok-paper-sunken) 55%, transparent); }
+tbody tr:last-child > * { border-block-end: 0; }
+tfoot { background: var(--ok-paper-sunken); }
+tfoot th, tfoot td { border-block-end: 0; border-block-start: var(--ok-border) solid var(--ok-rule-strong); }
+
+/* ---- Media -------------------------------------------------------------- */
+
+img, video, picture, canvas, svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+img { border-radius: var(--ok-radius-sm); background: var(--ok-paper-sunken); }
+
+figure {
+  border: var(--ok-border) solid var(--ok-rule);
+  border-radius: var(--ok-radius);
+  padding: var(--ok-space-3);
+  background: var(--ok-paper-raised);
+}
+figcaption {
+  margin-block-start: var(--ok-space-2);
+  font-size: var(--ok-size-small);
+  color: var(--ok-ink-muted);
+  line-height: var(--ok-leading-snug);
+}
+
+audio { width: 100%; display: block; }
+
+/* An embedded frame is never rendered from imported content; if one somehow
+   reaches the page it must be visibly inert rather than silently live. */
+iframe, embed, object { display: none; }
+
+/* ---- Structure ---------------------------------------------------------- */
+
+hr {
+  border: 0;
+  border-block-start: var(--ok-border) solid var(--ok-rule);
+  margin-block: var(--ok-space-6);
+}
+
+details {
+  border: var(--ok-border) solid var(--ok-rule);
+  border-radius: var(--ok-radius);
+  background: var(--ok-paper-raised);
+  padding: var(--ok-space-3) var(--ok-space-4);
+}
+details[open] { background: var(--ok-paper-sunken); }
+summary {
+  cursor: pointer;
+  font-weight: var(--ok-weight-medium);
+  min-height: var(--ok-touch-target);
+  display: flex;
+  align-items: center;
+  gap: var(--ok-space-2);
+  list-style: none;
+}
+summary::-webkit-details-marker { display: none; }
+summary::before {
+  content: '';
+  inline-size: 0.5em;
+  block-size: 0.5em;
+  border-inline-end: 2px solid var(--ok-ink-faint);
+  border-block-end: 2px solid var(--ok-ink-faint);
+  transform: rotate(-45deg);
+  transition: transform var(--ok-motion-fast) var(--ok-ease);
+}
+details[open] > summary::before { transform: rotate(45deg); }
+details > *:not(summary) { margin-block-start: var(--ok-space-3); }
+
+dialog {
+  border: var(--ok-border) solid var(--ok-rule-strong);
+  border-radius: var(--ok-radius-lg);
+  background: var(--ok-paper-raised);
+  color: var(--ok-ink);
+  padding: var(--ok-space-5);
+  max-inline-size: min(32rem, calc(100vw - 2rem));
+}
+dialog::backdrop { background: color-mix(in srgb, var(--ok-ink) 45%, transparent); }
+
+/* ---- Forms: never the platform's default chrome ------------------------- */
+
+button, input, select, textarea {
+  font: inherit;
+  font-size: var(--ok-size-small);
+  color: var(--ok-ink);
+  background: var(--ok-paper-raised);
+  border: var(--ok-border) solid var(--ok-rule-strong);
+  border-radius: var(--ok-radius);
+  padding: var(--ok-space-2) var(--ok-space-3);
+  min-height: var(--ok-touch-target);
+}
+
+button {
+  cursor: pointer;
+  font-weight: var(--ok-weight-medium);
+  padding-inline: var(--ok-space-4);
+  transition: background-color var(--ok-motion-fast) var(--ok-ease),
+              border-color var(--ok-motion-fast) var(--ok-ease);
+}
+button:hover { background: var(--ok-paper-sunken); border-color: var(--ok-ink-faint); }
+button[disabled] { cursor: not-allowed; opacity: 0.55; }
+
+textarea { min-height: 6rem; resize: vertical; line-height: var(--ok-leading-body); }
+
+select {
+  appearance: none;
+  padding-inline-end: var(--ok-space-6);
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 1.15rem center, right 0.85rem center;
+  background-size: 0.3rem 0.3rem, 0.3rem 0.3rem;
+  background-repeat: no-repeat;
+}
+
+/* Selection controls keep a real hit target and a visible checked state that
+   does not depend on colour alone. */
+input[type='checkbox'], input[type='radio'] {
+  appearance: none;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  min-height: 0;
+  padding: 0;
+  display: inline-grid;
+  place-content: center;
+  flex: none;
+}
+input[type='radio'] { border-radius: 50%; }
+input[type='checkbox']::before,
+input[type='radio']::before { content: ''; inline-size: 0.65rem; block-size: 0.65rem; transform: scale(0); transition: transform var(--ok-motion-fast) var(--ok-ease); }
+input[type='checkbox']::before {
+  clip-path: polygon(14% 44%, 0 65%, 40% 100%, 100% 16%, 84% 0, 39% 68%);
+  background: var(--ok-accent);
+}
+input[type='radio']::before { border-radius: 50%; background: var(--ok-accent); }
+input[type='checkbox']:checked, input[type='radio']:checked { border-color: var(--ok-accent); }
+input[type='checkbox']:checked::before, input[type='radio']:checked::before { transform: scale(1); }
+
+input[type='range'] {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  inline-size: 100%;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  block-size: 0.25rem;
+  border-radius: var(--ok-radius-sm);
+  background: var(--ok-rule-strong);
+}
+input[type='range']::-webkit-slider-thumb {
+  appearance: none;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  margin-block-start: -0.5rem;
+  border-radius: 50%;
+  background: var(--ok-accent);
+  border: 2px solid var(--ok-paper-raised);
+}
+input[type='range']::-moz-range-track { block-size: 0.25rem; border-radius: var(--ok-radius-sm); background: var(--ok-rule-strong); }
+input[type='range']::-moz-range-thumb { inline-size: 1.25rem; block-size: 1.25rem; border-radius: 50%; background: var(--ok-accent); border: 2px solid var(--ok-paper-raised); }
+
+input[type='color'] { padding: var(--ok-space-1); inline-size: 3rem; cursor: pointer; }
+input[type='file'] { padding: var(--ok-space-2); cursor: pointer; }
+input::placeholder, textarea::placeholder { color: var(--ok-ink-faint); opacity: 1; }
+
+label { font-size: var(--ok-size-small); color: var(--ok-ink-muted); }
+
+fieldset {
+  border: var(--ok-border) solid var(--ok-rule);
+  border-radius: var(--ok-radius);
+  padding: var(--ok-space-4);
+}
+legend { padding-inline: var(--ok-space-2); font-weight: var(--ok-weight-medium); color: var(--ok-ink-muted); font-size: var(--ok-size-small); }
+
+progress, meter {
+  appearance: none;
+  inline-size: 100%;
+  block-size: 0.5rem;
+  border: 0;
+  border-radius: var(--ok-radius-sm);
+  background: var(--ok-rule);
+}
+progress::-webkit-progress-bar { background: var(--ok-rule); border-radius: var(--ok-radius-sm); }
+progress::-webkit-progress-value { background: var(--ok-accent); border-radius: var(--ok-radius-sm); }
+progress::-moz-progress-bar { background: var(--ok-accent); border-radius: var(--ok-radius-sm); }
+meter::-webkit-meter-bar { background: var(--ok-rule); border: 0; border-radius: var(--ok-radius-sm); }
+meter::-webkit-meter-optimum-value { background: var(--ok-positive); border-radius: var(--ok-radius-sm); }

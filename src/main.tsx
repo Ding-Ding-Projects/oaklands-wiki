@@ -4,6 +4,7 @@ import { App } from './App';
 import { routeIdForPath } from './lib/routes';
 import './styles/tokens.css';
 import './styles/base.css';
+import './styles/elements.css';
 
 const root = document.getElementById('root');
 if (root) {
