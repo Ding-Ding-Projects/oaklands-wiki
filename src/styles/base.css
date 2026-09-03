@@ -612,7 +612,22 @@ main { padding-block: var(--ok-space-6) var(--ok-space-8); }
 
 .ok-docs { display: grid; gap: var(--ok-space-5); margin-block-start: var(--ok-space-4); }
 @media (min-width: 64rem) { .ok-docs { grid-template-columns: 18rem minmax(0, 1fr); align-items: start; } }
-.ok-docs__nav { display: grid; gap: var(--ok-space-4); }
+/* A single-column grid sizes its implicit column to max-content, so the widest
+   child decides the width and the 18rem track is merely a suggestion. The search
+   field inside is the widest thing here, because an <input> carries an intrinsic
+   size, and it pushed the whole aside 30px past its column. Vendoring Inter is
+   what surfaced it: the previous fallback face was narrow enough to fit by luck.
+   minmax(0, 1fr) makes the column shrinkable, which is what 1fr alone does not. */
+.ok-docs__nav {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--ok-space-4);
+  min-inline-size: 0;
+}
+.ok-docs__nav .ok-search,
+.ok-docs__nav .ok-search__field,
+.ok-docs__nav .ok-search__label,
+.ok-docs__nav section { min-inline-size: 0; }
 .ok-docs__nav .ok-row[aria-current='page'] { border-color: var(--ok-accent); color: var(--ok-accent); }
 .ok-docs__body > * + * { margin-block-start: var(--ok-rhythm); }
 .ok-docs__body h2 { margin-block-start: var(--ok-space-7); }
