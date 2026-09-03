@@ -12,7 +12,21 @@ html { font-size: calc(100% * var(--ok-font-scale, 1)); }
   inset-inline-end: var(--ok-space-4);
   z-index: 40;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: var(--ok-space-2);
+  /* Never wider than the viewport it floats over. Six chips measured 498px at a
+     320px viewport and pushed the page sideways, which is the one thing the
+     layout rules forbid outright. */
+  max-inline-size: calc(100vw - var(--ok-space-4) * 2);
+}
+.ok-chrome-bar__toggle { display: none; }
+
+/* Below the breakpoint the tools collapse behind one control. */
+@media (max-width: 40rem) {
+  .ok-chrome-bar__toggle { display: inline-flex; order: 1; }
+  .ok-chrome-bar > :not(.ok-chrome-bar__toggle) { display: none; }
+  .ok-chrome-bar[data-open] > * { display: inline-flex; }
 }
 .ok-chrome-bar .ok-chip {
   min-height: var(--ok-touch-target);

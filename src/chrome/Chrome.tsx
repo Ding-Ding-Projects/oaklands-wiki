@@ -35,6 +35,9 @@ export function Chrome() {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [storageBlocked, setStorageBlocked] = useState(false);
   const [ticketsOpen, setTicketsOpen] = useState(false);
+  // Six floating chips are 498px wide and do not fit a 320px viewport, so below
+  // the breakpoint they collapse behind one control rather than overflowing.
+  const [toolsOpen, setToolsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [scheduleOpen, setScheduleOpen] = useState(false);
@@ -122,7 +125,16 @@ export function Chrome() {
       <ElementMenu state={state} onClearAll={() => setTicketsOpen(true)} />
       <AttentionBar state={state} />
 
-      <div className="ok-chrome-bar">
+      <div className="ok-chrome-bar" data-open={toolsOpen || undefined}>
+        <button
+          type="button"
+          className="ok-chip ok-chrome-bar__toggle"
+          aria-expanded={toolsOpen}
+          aria-label={toolsOpen ? 'Hide tools' : 'Show tools'}
+          onClick={() => setToolsOpen((open) => !open)}
+        >
+          {toolsOpen ? '✕' : '⚙'}
+        </button>
         <button
           type="button"
           className="ok-chip"
