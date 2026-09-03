@@ -2,7 +2,7 @@
   "recordType": "oaklands-wiki-design-parity-inventory",
   "schemaVersion": 1,
   "note": "Hand-written screen list captured from the real deployed site under a pinned tuple. A discovery scan cannot notice a screen that was never captured, so the list is explicit and the guard fails when a row has no reference file.",
-  "capturedAt": "2026-09-03T19:13:19.589Z",
+  "capturedAt": "2026-09-03T20:04:05.787Z",
   "rows": [
     {
       "id": "home",
@@ -13,8 +13,8 @@
       "viewport": "390x844",
       "scale": 2,
       "mobile": true,
-      "sha256": "a4ffa9a2a94c4c0ee614d1518f560dc7d235917c9c10bd0447a20d1ebfc6f98e",
-      "bytes": 269596
+      "sha256": "f485b8d5d9b82fed6511e7d0fab09f339d5087d177a64c36fd2235c0e6546562",
+      "bytes": 283615
     },
     {
       "id": "home-desktop",
@@ -25,8 +25,8 @@
       "viewport": "1280x900",
       "scale": 1,
       "mobile": false,
-      "sha256": "15b98bcd6ba11c5532a470e54244d19fecf76f0b940ba2ac4d3668709eaa2ec1",
-      "bytes": 258725
+      "sha256": "065a25b456176a8f40f1d2c82c7a74bd700b1e2dae85a922a1ec360fc4fe9c50",
+      "bytes": 272483
     },
     {
       "id": "browse",
@@ -37,8 +37,8 @@
       "viewport": "390x844",
       "scale": 2,
       "mobile": true,
-      "sha256": "ae56e1d7b0b5c9fc07765e7ba623ec961dae30926965cb7d91fe5730bea74feb",
-      "bytes": 213162
+      "sha256": "31c8e100faebbc95d4157c4ebfbc08c95b9bb37cce0d314f7e5b4207c3e7f553",
+      "bytes": 227002
     },
     {
       "id": "compare",
@@ -49,8 +49,8 @@
       "viewport": "1280x900",
       "scale": 1,
       "mobile": false,
-      "sha256": "a10ed6a01502207c4e4e1d4cfe7fd606f939c786c63fedd80b8b81361fe0c875",
-      "bytes": 151661
+      "sha256": "d381944dab8571cf4b43339f53bb2179d37d4541c085ac7ae19d1331be4d8b5b",
+      "bytes": 169531
     },
     {
       "id": "logic",
@@ -61,8 +61,8 @@
       "viewport": "1280x900",
       "scale": 1,
       "mobile": false,
-      "sha256": "d086dd0306377dd6ce37225424a90d6ba126859a0afb4442d8eeccf5d18afee5",
-      "bytes": 158744
+      "sha256": "10f2f23c496d5ff549a86b37ae481f62c541654168beaf4d3c880b2ea171ffb2",
+      "bytes": 168593
     },
     {
       "id": "docs",
@@ -73,8 +73,8 @@
       "viewport": "1280x900",
       "scale": 1,
       "mobile": false,
-      "sha256": "541174bc3a517017f3d00ee43ce671d6ce46ed289c07c8d9dfc5ce46623720f9",
-      "bytes": 188314
+      "sha256": "51d4aeebf3982c8a8f87d9709cf92fa2476871499e4644f0f3d2bcf631f260cc",
+      "bytes": 222134
     },
     {
       "id": "article",
@@ -85,8 +85,8 @@
       "viewport": "390x844",
       "scale": 2,
       "mobile": true,
-      "sha256": "8488aef95c3f110752044918fb94155df1d39c65c10528973654aef32cefccca",
-      "bytes": 385401
+      "sha256": "9e278b954fac96fc018bfdfbc181d55a0fa77b16942fb31a441112ccee0e7e33",
+      "bytes": 393462
     },
     {
       "id": "category",
@@ -97,8 +97,8 @@
       "viewport": "390x844",
       "scale": 2,
       "mobile": true,
-      "sha256": "cb70e0afbceec7b2f72eee67e72c8342abf88c45ca47ece22127ade4c9467804",
-      "bytes": 220872
+      "sha256": "c0ad76a81c390d58b2f7e26bc8d4d1ad8221ca9f32f6c9c3603cb298437f3d31",
+      "bytes": 230732
     },
     {
       "id": "about",
@@ -109,8 +109,8 @@
       "viewport": "390x844",
       "scale": 2,
       "mobile": true,
-      "sha256": "1ed5a6c7d93168f0ed53d8b14502c008b32b62ff685af3e80f948b295e5d3804",
-      "bytes": 297608
+      "sha256": "5fd2560ec7e65b2ef73427adc593113c664b618aede97416ea0caa210edc1817",
+      "bytes": 309009
     }
   ]
 }
