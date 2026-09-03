@@ -582,3 +582,23 @@ main { padding-block: var(--ok-space-6) var(--ok-space-8); }
 .ok-seg i[data-seg='g'] { inset-block-start: calc(50% - 2px); inset-inline: 20%; block-size: 4px; }
 
 .ok-bulkbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ok-space-2); margin-block-start: var(--ok-space-4); }
+
+/* ---- Documentation, changelog and status --------------------------------- */
+
+.ok-docs { display: grid; gap: var(--ok-space-5); margin-block-start: var(--ok-space-4); }
+@media (min-width: 64rem) { .ok-docs { grid-template-columns: 18rem minmax(0, 1fr); align-items: start; } }
+.ok-docs__nav { display: grid; gap: var(--ok-space-4); }
+.ok-docs__nav .ok-row[aria-current='page'] { border-color: var(--ok-accent); color: var(--ok-accent); }
+.ok-docs__body > * + * { margin-block-start: var(--ok-rhythm); }
+.ok-docs__body h2 { margin-block-start: var(--ok-space-7); }
+.ok-docs__body h3 { margin-block-start: var(--ok-space-5); }
+
+.ok-changelog { list-style: none; margin: var(--ok-space-4) 0 0; padding: 0; display: grid; gap: var(--ok-space-4); }
+.ok-changelog li {
+  padding: var(--ok-space-4);
+  border: var(--ok-border) solid var(--ok-rule);
+  border-radius: var(--ok-radius);
+  background: var(--ok-paper-raised);
+}
+.ok-changelog h3 { font-size: var(--ok-size-h4); }
+.ok-changelog p { margin-block-start: var(--ok-space-2); }

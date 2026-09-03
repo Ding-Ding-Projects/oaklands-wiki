@@ -64,10 +64,23 @@ async function main() {
   // Payloads for the routes that need data. A route listed in routes.json but
   // missing its payload file renders its honest fallback rather than a blank.
   const payloadFor = async (id) => {
-    const file = { home: 'home.json', browse: 'browse.json', compare: 'comparisons.json' }[id];
-    if (!file) return undefined;
+    // Directory as well as filename: the generated docs bundle does not live
+    // beside the article data, and joining the wrong one fails silently into
+    // "render without data" rather than saying which file was missing.
+    const source = {
+      home: ['articles', 'home.json'],
+      browse: ['articles', 'browse.json'],
+      compare: ['articles', 'comparisons.json'],
+      docs: ['generated', 'docs.json'],
+    }[id];
+    if (!source) return undefined;
+    const [directory, file] = source;
     try {
-      const raw = JSON.parse(await readFile(path.join(ROOT, 'data', 'articles', file), 'utf8'));
+      const raw = JSON.parse(await readFile(path.join(ROOT, 'data', directory, file), 'utf8'));
+      if (id === 'docs') {
+        const changelog = JSON.parse(await readFile(path.join(ROOT, 'data', 'generated', 'changelog.json'), 'utf8'));
+        return { docs: raw, changelog };
+      }
       if (id !== 'compare') return raw;
       if (!Array.isArray(raw) || raw.length === 0) return undefined;
       return { tables: raw, active: raw[0].type };

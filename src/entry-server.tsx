@@ -5,7 +5,7 @@ import { App, type AppProps } from './App';
 export { THEME_INLINE_SCRIPT } from './components/ThemeToggle';
 
 const KEY: Record<string, keyof AppProps> = {
-  home: 'home', article: 'article', category: 'category', browse: 'browse', compare: 'compare',
+  home: 'home', article: 'article', category: 'category', browse: 'browse', compare: 'compare', docs: 'docs',
 };
 
 export function render(route: AppProps['route'], payload?: unknown): string {

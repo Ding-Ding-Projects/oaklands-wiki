@@ -311,8 +311,15 @@
     },
     {
       "id": "F-030",
-      "title": "Offline documentation, changelog viewer, status surface",
-      "state": "open"
+      "title": "Offline documentation, changelog with commit links, and a status surface",
+      "state": "built",
+      "implementation": [
+        "src/pages/Docs.tsx",
+        "scripts/build-docs-and-changelog.mjs"
+      ],
+      "docs": [
+        "docs/features/README.md"
+      ]
     },
     {
       "id": "F-031",

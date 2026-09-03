@@ -24,7 +24,9 @@
     "test:locks": "node scripts/test-locks.mjs",
     "test:robots": "node scripts/test-robots.mjs",
     "test:logic": "node --experimental-strip-types scripts/test-logic-sim.mjs",
-    "test:schedule": "node --experimental-strip-types scripts/test-schedule.mjs"
+    "test:schedule": "node --experimental-strip-types scripts/test-schedule.mjs",
+    "build:docs": "node scripts/build-docs-and-changelog.mjs",
+    "prebuild": "node scripts/build-docs-and-changelog.mjs"
   },
   "dependencies": {
     "node-html-parser": "^7.0.1",

@@ -25,6 +25,12 @@
     "hydrate": true
   },
   {
+    "id": "docs",
+    "path": "/docs/",
+    "title": "Documentation \u2014 Oaklands Wiki",
+    "description": "Every feature documented, the full changelog with a commit link on each entry, and the honest current state of this build. Bundled offline."
+  },
+  {
     "id": "about",
     "path": "/about/",
     "title": "About \u2014 Oaklands Wiki",
