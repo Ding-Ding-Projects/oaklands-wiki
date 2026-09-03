@@ -1,0 +1,203 @@
+/* Oaklands Reader — base layer. Consumes tokens.css; declares no --ok-* tokens. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ok-paper);
+  color: var(--ok-ink);
+  font-family: var(--ok-font-body);
+  font-size: var(--ok-size-body);
+  line-height: var(--ok-leading-body);
+  font-weight: var(--ok-weight-regular);
+  /* The page body never scrolls sideways. Wide content scrolls inside itself. */
+  overflow-x: hidden;
+}
+
+/* ---- Reading rhythm --------------------------------------------------- */
+
+.ok-prose { max-width: var(--ok-measure); }
+.ok-prose > * + * { margin-block-start: var(--ok-rhythm); }
+.ok-prose p { margin: 0; }
+
+h1, h2, h3, h4 {
+  font-family: var(--ok-font-display);
+  line-height: var(--ok-leading-tight);
+  letter-spacing: var(--ok-tracking-tight);
+  font-weight: var(--ok-weight-bold);
+  margin: 0;
+  text-wrap: balance;
+}
+h1 { font-size: var(--ok-size-h1); }
+h2 { font-size: var(--ok-size-h2); }
+h3 { font-size: var(--ok-size-h3); }
+h4 { font-size: var(--ok-size-h4); font-family: var(--ok-font-body); font-weight: var(--ok-weight-medium); }
+
+a { color: var(--ok-accent); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+a:hover { color: var(--ok-accent-hover); }
+
+/* Focus is always visible, and never removed without replacement. */
+:focus-visible {
+  outline: 2px solid var(--ok-focus);
+  outline-offset: 2px;
+  border-radius: var(--ok-radius-sm);
+}
+
+.ok-skip-link {
+  position: absolute;
+  inset-inline-start: var(--ok-space-4);
+  inset-block-start: -4rem;
+  z-index: 100;
+  background: var(--ok-paper-raised);
+  color: var(--ok-ink);
+  padding: var(--ok-space-3) var(--ok-space-4);
+  border: var(--ok-border) solid var(--ok-rule-strong);
+  border-radius: var(--ok-radius);
+  transition: inset-block-start var(--ok-motion) var(--ok-ease);
+}
+.ok-skip-link:focus { inset-block-start: var(--ok-space-3); }
+
+/* ---- Shell ------------------------------------------------------------ */
+
+.ok-shell { max-width: var(--ok-shell-max); margin-inline: auto; padding-inline: var(--ok-space-4); }
+
+.ok-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  min-height: var(--ok-topbar-height);
+  display: flex;
+  align-items: center;
+  gap: var(--ok-space-4);
+  background: color-mix(in srgb, var(--ok-paper) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-block-end: var(--ok-border) solid var(--ok-rule);
+}
+.ok-topbar__title {
+  font-family: var(--ok-font-display);
+  font-weight: var(--ok-weight-bold);
+  font-size: var(--ok-size-h4);
+  letter-spacing: var(--ok-tracking-tight);
+  text-decoration: none;
+  color: var(--ok-ink);
+}
+
+main { padding-block: var(--ok-space-6) var(--ok-space-8); }
+
+/* On phones the primary navigation sits within thumb reach at the bottom. */
+.ok-bottomnav {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  min-height: var(--ok-bottomnav-height);
+  border-block-start: var(--ok-border) solid var(--ok-rule);
+  background: var(--ok-paper-raised);
+  padding-block-end: env(safe-area-inset-bottom);
+}
+.ok-bottomnav a {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--ok-touch-target);
+  font-size: var(--ok-size-micro);
+  text-decoration: none;
+  color: var(--ok-ink-muted);
+}
+.ok-bottomnav a[aria-current='page'] { color: var(--ok-accent); font-weight: var(--ok-weight-medium); }
+@media (min-width: 48rem) { .ok-bottomnav { display: none; } }
+
+.ok-footer {
+  margin-block-start: var(--ok-space-8);
+  border-block-start: var(--ok-border) solid var(--ok-rule);
+  padding-block: var(--ok-space-5);
+  color: var(--ok-ink-muted);
+  font-size: var(--ok-size-small);
+}
+.ok-footer > * + * { margin-block-start: var(--ok-space-2); }
+
+/* ---- Category grid ---------------------------------------------------- */
+
+.ok-catgrid {
+  display: grid;
+  grid-template-columns: 1fr;             /* one column at 320px */
+  gap: var(--ok-space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+@media (min-width: 37.5rem) { .ok-catgrid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 64rem)   { .ok-catgrid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 80rem)   { .ok-catgrid { grid-template-columns: repeat(4, 1fr); } }
+
+.ok-cat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ok-space-3);
+  min-height: 3.25rem;                    /* comfortably past the 48px floor */
+  padding: var(--ok-space-3) var(--ok-space-4);
+  border: var(--ok-border) solid var(--ok-rule);
+  border-inline-start: 3px solid var(--ok-cat-accent, var(--ok-rule-strong));
+  border-radius: var(--ok-radius);
+  background: var(--ok-paper-raised);
+  color: var(--ok-ink);
+  text-decoration: none;
+  transition: border-color var(--ok-motion-fast) var(--ok-ease);
+}
+.ok-cat:hover { border-color: var(--ok-rule-strong); border-inline-start-color: var(--ok-cat-accent, var(--ok-rule-strong)); }
+.ok-cat__name { font-weight: var(--ok-weight-medium); }
+.ok-cat__count {
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--ok-ink-faint);
+  font-size: var(--ok-size-small);
+}
+
+/* ---- Reference objects read differently from prose, on purpose -------- */
+
+.ok-keyfacts {
+  border: var(--ok-border) solid var(--ok-rule);
+  border-radius: var(--ok-radius);
+  background: var(--ok-paper-sunken);
+  padding: var(--ok-space-4);
+  font-size: var(--ok-size-small);
+  line-height: var(--ok-leading-snug);
+}
+.ok-keyfacts dl { display: grid; grid-template-columns: auto 1fr; gap: var(--ok-space-2) var(--ok-space-4); margin: 0; }
+.ok-keyfacts dt { color: var(--ok-ink-muted); }
+.ok-keyfacts dd { margin: 0; font-variant-numeric: tabular-nums lining-nums; text-align: end; }
+
+/* Wide content scrolls inside its own container, never the page body. */
+.ok-scroller { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+.ok-note {
+  border-inline-start: 3px solid var(--ok-accent);
+  padding: var(--ok-space-3) var(--ok-space-4);
+  background: var(--ok-paper-sunken);
+  border-radius: 0 var(--ok-radius) var(--ok-radius) 0;
+}
+
+.ok-muted { color: var(--ok-ink-muted); }
+.ok-lede { font-size: calc(var(--ok-size-body) * 1.1); color: var(--ok-ink-muted); }
+.ok-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: var(--ok-tracking-wide);
+  font-size: var(--ok-size-micro);
+  font-weight: var(--ok-weight-medium);
+  color: var(--ok-ink-faint);
+}
+
+/* Reduced motion is honoured, not merely slowed. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

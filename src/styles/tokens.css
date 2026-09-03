@@ -1,0 +1,165 @@
+/*
+ * Oaklands Reader — the single design-token source for this site.
+ *
+ * This is the ONLY file permitted to declare `--ok-*` custom properties.
+ * `scripts/check-static-bundle.mjs` asserts that, and that no token is declared
+ * twice inside one selector block: a token declared in two places is decided by
+ * import order rather than by intent, and editing the losing copy is a silent
+ * no-op that type-checks, formats and ships without changing a pixel.
+ *
+ * Design language rationale lives in docs/standards/design-language.md.
+ * Material Design 3 is deliberately NOT used here; it is app chrome and it
+ * fights long-form reading. That deviation is recorded, dated and reasoned.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* ---- Typography: the system itself -------------------------------- */
+  /* A humanist stack until the vendored faces land in phase 1's font step. */
+  --ok-font-body: "Source Sans 3", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --ok-font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --ok-font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  /* Body sizes. 18px on a phone is the single biggest readability lever. */
+  --ok-size-body: 1.125rem;      /* 18px */
+  --ok-size-small: 0.9375rem;    /* 15px */
+  --ok-size-micro: 0.8125rem;    /* 13px */
+
+  /* Modular heading scale, ~1.25. Tight leading so hierarchy reads at a glance. */
+  --ok-size-h1: 2.1875rem;       /* 35px */
+  --ok-size-h2: 1.75rem;         /* 28px */
+  --ok-size-h3: 1.375rem;        /* 22px */
+  --ok-size-h4: 1.125rem;        /* 18px */
+
+  --ok-leading-body: 1.7;
+  --ok-leading-tight: 1.22;
+  --ok-leading-snug: 1.4;
+
+  --ok-weight-regular: 400;
+  --ok-weight-medium: 550;
+  --ok-weight-bold: 700;
+
+  --ok-tracking-tight: -0.011em;
+  --ok-tracking-normal: 0;
+  --ok-tracking-wide: 0.02em;
+
+  /* ---- Measure: the prose column is capped, always -------------------- */
+  --ok-measure: 70ch;
+  --ok-measure-wide: 82ch;
+  --ok-shell-max: 78rem;
+
+  /* ---- Spacing: 4px base ---------------------------------------------- */
+  --ok-space-1: 0.25rem;
+  --ok-space-2: 0.5rem;
+  --ok-space-3: 0.75rem;
+  --ok-space-4: 1rem;
+  --ok-space-5: 1.5rem;
+  --ok-space-6: 2rem;
+  --ok-space-7: 3rem;
+  --ok-space-8: 4rem;
+
+  /* Density is the reader's choice; the compact mode multiplies this. */
+  --ok-density-scale: 1;
+  --ok-rhythm: calc(var(--ok-space-5) * var(--ok-density-scale));
+
+  /* ---- Surfaces: calm paper, no elevation theatre --------------------- */
+  --ok-paper: #fbf9f5;
+  --ok-paper-raised: #ffffff;
+  --ok-paper-sunken: #f2eee6;
+  --ok-ink: #1f1b16;
+  --ok-ink-muted: #5c5348;
+  --ok-ink-faint: #857a6c;
+  --ok-rule: #ddd5c8;
+  --ok-rule-strong: #c3b8a6;
+
+  /* One accent. Structure is carried by rules, spacing and weight. */
+  --ok-accent: #8a5a2b;
+  --ok-accent-hover: #6f4620;
+  --ok-accent-contrast: #ffffff;
+  --ok-focus: #1a5fb4;
+
+  /* States never rely on colour alone; text or shape always accompanies. */
+  --ok-positive: #2f6a3f;
+  --ok-caution: #8a6d1f;
+  --ok-negative: #9a3020;
+
+  /* ---- Category identity, drawn from real Oaklands material tones ----- */
+  /* Small identity marks, never large fills. */
+  --ok-cat-ores: #b06a3b;        /* copper */
+  --ok-cat-trees: #5c7f42;       /* oak leaf */
+  --ok-cat-tools: #5a7a8f;       /* steel */
+  --ok-cat-items: #9a7420;       /* amber */
+  --ok-cat-locations: #6a6f7b;   /* slate */
+  --ok-cat-vinyls: #7a4b8f;      /* vinyl */
+  --ok-cat-vehicles: #a9552f;    /* rust */
+  --ok-cat-structures: #7d7263;  /* stone */
+  --ok-cat-events: #a33a4a;      /* festive */
+  --ok-cat-logic: #2f7280;       /* circuit */
+  --ok-cat-npcs: #8a5f5a;        /* clay */
+  --ok-cat-badges: #997520;      /* gold */
+
+  /* ---- Shape: restrained ---------------------------------------------- */
+  --ok-radius-sm: 3px;
+  --ok-radius: 6px;
+  --ok-radius-lg: 10px;
+  --ok-border: 1px;
+
+  /* ---- Motion: quiet, and fully removable ----------------------------- */
+  --ok-motion-fast: 120ms;
+  --ok-motion: 200ms;
+  --ok-ease: cubic-bezier(0.2, 0, 0.2, 1);
+
+  /* ---- Layout ---------------------------------------------------------- */
+  --ok-tabstrip-width: 15rem;
+  --ok-topbar-height: 3.25rem;
+  --ok-bottomnav-height: 3.5rem;
+  --ok-touch-target: 2.75rem;   /* 44px floor; 48px used where space allows */
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --ok-paper: #16140f;
+  --ok-paper-raised: #1f1c16;
+  --ok-paper-sunken: #100e0a;
+  --ok-ink: #ece5d9;
+  --ok-ink-muted: #b3a996;
+  --ok-ink-faint: #8b8172;
+  --ok-rule: #342f26;
+  --ok-rule-strong: #4b4437;
+
+  --ok-accent: #d99a5e;
+  --ok-accent-hover: #eab077;
+  --ok-accent-contrast: #16140f;
+  --ok-focus: #77aaff;
+
+  --ok-positive: #6fbf85;
+  --ok-caution: #d7b45c;
+  --ok-negative: #e08272;
+
+  --ok-cat-ores: #d99a5e;
+  --ok-cat-trees: #8fb673;
+  --ok-cat-tools: #8fb2c7;
+  --ok-cat-items: #d4ab52;
+  --ok-cat-locations: #a3a8b4;
+  --ok-cat-vinyls: #b283c4;
+  --ok-cat-vehicles: #d98b62;
+  --ok-cat-structures: #b3a795;
+  --ok-cat-events: #d97a87;
+  --ok-cat-logic: #6bb3c0;
+  --ok-cat-npcs: #c1948e;
+  --ok-cat-badges: #d4b055;
+}
+
+[data-density='compact'] {
+  --ok-density-scale: 0.72;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --ok-size-body: 1.1875rem;   /* 19px on desktop */
+    --ok-size-h1: 2.625rem;
+    --ok-size-h2: 2rem;
+  }
+}

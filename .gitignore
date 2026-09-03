@@ -1,0 +1,9 @@
+node_modules/
+dist/
+build/
+.vite/
+*.local
+.DS_Store
+vendor/fonts/
+data/corpus/.staging/
+dist-ssr/

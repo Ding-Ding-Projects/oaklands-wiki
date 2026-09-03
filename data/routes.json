@@ -1,0 +1,4 @@
+[
+  { "id": "home",  "path": "/",      "title": "Oaklands Wiki", "description": "A reading-first encyclopedia for Oaklands, the Roblox game by Typical Developers. An unofficial CC BY-SA archive of the community wiki." },
+  { "id": "about", "path": "/about", "title": "About — Oaklands Wiki", "description": "What this site is, where its content comes from, how it is licensed, and what is not built yet." }
+]

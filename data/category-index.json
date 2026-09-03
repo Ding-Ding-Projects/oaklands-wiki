@@ -1,0 +1,65 @@
+{
+  "capturedAt": "2026-09-03T15:31:47.613504Z",
+  "source": "https://oaklands.fandom.com/api.php",
+  "articles": 1066,
+  "pages": 4902,
+  "images": 3355,
+  "categories": [
+    {
+      "name": "Ores",
+      "slug": "ores",
+      "count": 64
+    },
+    {
+      "name": "Trees",
+      "slug": "trees",
+      "count": 70
+    },
+    {
+      "name": "Tools",
+      "slug": "tools",
+      "count": 65
+    },
+    {
+      "name": "Items",
+      "slug": "items",
+      "count": 116
+    },
+    {
+      "name": "Locations",
+      "slug": "locations",
+      "count": 50
+    },
+    {
+      "name": "Structures",
+      "slug": "structures",
+      "count": 44
+    },
+    {
+      "name": "Logic",
+      "slug": "logic",
+      "count": 45
+    },
+    {
+      "name": "Vinyls",
+      "slug": "vinyls",
+      "count": 28
+    },
+    {
+      "name": "Vehicles",
+      "slug": "vehicles",
+      "count": 14
+    },
+    {
+      "name": "Events",
+      "slug": "events",
+      "count": 16
+    },
+    {
+      "name": "NPCs",
+      "slug": "npcs",
+      "count": 23
+    }
+  ],
+  "note": "Badges is an article on the source wiki rather than a category, so it is not a grid row."
+}

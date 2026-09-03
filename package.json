@@ -1,0 +1,33 @@
+{
+  "name": "oaklands-wiki",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
+    "postbuild": "node scripts/check-static-bundle.mjs && node scripts/check-completeness.mjs",
+    "preview": "vite preview",
+    "import": "node scripts/import-oaklands.mjs",
+    "generate:wiki": "node scripts/generate-wiki.mjs",
+    "count:lines": "node scripts/count-lines.mjs",
+    "check:bundle": "node scripts/check-static-bundle.mjs",
+    "check:completeness": "node scripts/check-completeness.mjs",
+    "check:completeness:self-test": "node scripts/check-completeness.mjs --self-test"
+  },
+  "dependencies": {
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.0",
+    "@types/react-dom": "19.2.0",
+    "@vitejs/plugin-react": "5.0.4",
+    "typescript": "5.9.3",
+    "vite": "7.1.9"
+  }
+}
