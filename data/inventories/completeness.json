@@ -228,8 +228,12 @@
     },
     {
       "id": "F-029",
-      "title": "Release-backed media volumes and display variants",
-      "state": "open"
+      "title": "Archived media at display size with an honest placeholder for the rest",
+      "state": "built",
+      "implementation": [
+        "scripts/import-media.mjs",
+        "src/components/Thumb.tsx"
+      ]
     },
     {
       "id": "F-030",

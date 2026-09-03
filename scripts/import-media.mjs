@@ -30,7 +30,7 @@ const API = 'https://oaklands.fandom.com/api.php';
 const UA = 'OaklandsWikiCorpusImporter/1.0 (+https://github.com/Ding-Ding-Projects/oaklands-wiki)';
 const WIDTH = 400;
 const BATCH = 40;
-const WAIT_MS = 200;
+const WAIT_MS = 90;
 const MAX_BYTES = 4 * 1024 * 1024;
 const FORCE = process.argv.includes('--force');
 const LIMIT = Number(process.env.MEDIA_LIMIT ?? '0');
@@ -101,6 +101,16 @@ async function main() {
   let fetched = 0; let reused = 0; let bytes = 0;
   const failures = [];
 
+  /*
+   * Read the output directory ONCE.
+   *
+   * The first version called readdir() per image to test for an existing file,
+   * which is O(n^2) and degrades as it runs: 252 images took 25 minutes and the
+   * rate was still falling. The work was never the network — it was re-listing a
+   * growing directory 2,449 times.
+   */
+  const onDisk = new Set(await readdir(OUT));
+
   for (let index = 0; index < targets.length; index += BATCH) {
     const batch = targets.slice(index, index + BATCH);
 
@@ -122,35 +132,57 @@ async function main() {
     }
     if (info.error) { failures.push({ batch: index, error: info.error.info }); continue; }
 
+    /*
+     * Download a batch with bounded concurrency.
+     *
+     * Sequentially this ran at about 42 images a minute — almost all of it spent
+     * waiting on round trips rather than doing anything. Six at a time keeps the
+     * request rate modest and courteous while cutting the wall clock roughly
+     * fivefold.
+     */
+    const pending = [];
     for (const page of info.query?.pages ?? []) {
       const sourceName = (page.title ?? '').replace(/^File:/, '');
       const image = page.imageinfo?.[0];
       if (!image) { failures.push({ name: sourceName, error: 'no imageinfo' }); continue; }
 
-      const target = image.thumburl ?? image.url;
       const base = mediaName(sourceName).replace(/\.[^.]+$/, '');
-      const existing = (await readdir(OUT)).find((f) => f.startsWith(`${base}.`));
+      const existing = ['webp', 'png', 'jpg', 'gif', 'svg']
+        .map((extension) => `${base}.${extension}`)
+        .find((candidate) => onDisk.has(candidate));
 
       if (!FORCE && existing) {
         manifest[sourceName] = { file: existing, width: image.thumbwidth ?? null, height: image.thumbheight ?? null, sha1: image.sha1 ?? null };
         reused += 1;
         continue;
       }
+      pending.push({ sourceName, image, base, target: image.thumburl ?? image.url });
+    }
 
-      try {
-        const asset = await fetchBuffer(target, `image ${sourceName}`);
-        if (asset.status !== 200) throw new Error(`HTTP ${asset.status}`);
-        const kind = sniff(asset.buffer);
-        // Trust the bytes, never the extension or the declared MIME type.
-        if (!kind) throw new Error(`unrecognised image bytes (${asset.type})`);
-        const file = `${base}.${kind}`;
-        await writeFile(path.join(OUT, file), asset.buffer);
-        manifest[sourceName] = { file, width: image.thumbwidth ?? null, height: image.thumbheight ?? null, sha1: image.sha1 ?? null };
-        fetched += 1;
-        bytes += asset.buffer.length;
-      } catch (error) {
-        failures.push({ name: sourceName, error: error.message });
-      }
+    const CONCURRENCY = 6;
+    for (let start = 0; start < pending.length; start += CONCURRENCY) {
+      await Promise.all(pending.slice(start, start + CONCURRENCY).map(async (job) => {
+        try {
+          const asset = await fetchBuffer(job.target, `image ${job.sourceName}`);
+          if (asset.status !== 200) throw new Error(`HTTP ${asset.status}`);
+          const kind = sniff(asset.buffer);
+          // Trust the bytes, never the extension or the declared MIME type.
+          if (!kind) throw new Error(`unrecognised image bytes (${asset.type})`);
+          const file = `${job.base}.${kind}`;
+          await writeFile(path.join(OUT, file), asset.buffer);
+          onDisk.add(file);
+          manifest[job.sourceName] = {
+            file,
+            width: job.image.thumbwidth ?? null,
+            height: job.image.thumbheight ?? null,
+            sha1: job.image.sha1 ?? null,
+          };
+          fetched += 1;
+          bytes += asset.buffer.length;
+        } catch (error) {
+          failures.push({ name: job.sourceName, error: error.message });
+        }
+      }));
       await sleep(WAIT_MS);
     }
     process.stdout.write(`\rimport-media: ${Math.min(index + BATCH, targets.length)}/${targets.length} (fetched ${fetched}, reused ${reused}, failed ${failures.length})`);

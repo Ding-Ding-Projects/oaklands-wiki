@@ -17,23 +17,23 @@ unticked with its state named beside it.
 - [x] Every guard assertion proved red-then-green
 - [x] Pages workflow
 - [x] Site confirmed live by fetching the deployed URL and reading it back
-- [ ] `build.bat` and `download-dependencies.bat`
+- [x] `build.bat` and `download-dependencies.bat`, both with `/s`
 - [ ] Vendored fonts with pinned versions and a SHA-256 manifest
 - [x] Corpus importer with a fail-closed robots preflight (live verdict: allow)
 - [x] Full corpus captured — 1,063 articles, 90 redirects, 98 categories, 357 editors
-- [ ] Line-count script with authorship attribution
+- [x] Line-count script with per-surviving-line authorship attribution
 - [x] Phone rendering measured on the live site at 390x844: no horizontal overflow, 18px/1.7 body, 56px category cards, 55px nav targets
-- [ ] Release workflow
+- [x] Release workflow with timing, line counts and published-release verification
 
 ## Phase 2 — Articles
 
-- [ ] Article routes prerendered for every imported article
-- [ ] Wikitext and expanded HTML captured, sanitised, source chrome stripped
-- [ ] Typed infobox extraction
-- [ ] Redirects resolved; unresolved links render as honest plain text, never dead hrefs
-- [ ] Attribution on every article: revision, contributors, timestamp, licence, source link
-- [ ] GitHub wiki generator
-- [ ] Wiki pushed *(blocked: the wiki repository does not exist until a first page is created through the web UI)*
+- [x] Article routes prerendered for every imported article
+- [x] Wikitext and expanded HTML captured, sanitised, source chrome stripped
+- [x] Typed infobox extraction (802 of 1,063 articles)
+- [x] Redirects resolved; unresolved links render as honest plain text, never dead hrefs
+- [x] Attribution on every article: revision, contributors, timestamp, licence, source link
+- [x] GitHub wiki generator, with a coverage and link-integrity guard
+- [x] Wiki pushed — 1,130 pages live, all 5,602 internal links resolve
 
 ## Phase 2.5 — Design
 
@@ -43,7 +43,12 @@ unticked with its state named beside it.
 
 ## Phase 3 — The redesign
 
-- [ ] Category browse with per-surface search and anchored regex builder
+- [x] Oaklands Reader v2: dark-first, image-forward, modern (replaced the editorial v1)
+- [x] Theme control that works on every page, including the script-free article pages
+- [x] `/browse/` over all 1,063 articles: letter, category and type filters that compose
+- [x] Archived media at display size, with an honest empty state where the archive holds none
+
+- [x] Category browse with per-surface search and anchored regex builder
 - [ ] Article reader: Key facts card, sticky contents, containers that scroll instead of the body
 - [ ] Comparison tables built from typed infobox records
 - [ ] Left-docked tab strip with correct vertical orientation and arrow keys

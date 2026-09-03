@@ -6,12 +6,12 @@ source is hard to read — especially on a phone.
 
 **Live site:** https://ding-ding-projects.github.io/oaklands-wiki/
 
-> [!IMPORTANT]
-> **Phase 1 — the site is hosted and deliberately thin.** The design system, hosting,
-> build-output guards, category index and embed graphic are real and working. Article
-> pages, browsing, search, media and the GitHub wiki mirror are **not built yet**. The
-> site says so on its own front page rather than implying otherwise. See
-> [ROADMAP.md](ROADMAP.md) for what is open.
+> [!NOTE]
+> **The archive is complete and readable.** All 1,063 articles, 63 categories and their
+> images are live on the site and mirrored to the GitHub wiki. Audio and video are not
+> archived yet and show a placeholder naming the file. The wider settings surface —
+> language modes, per-element appearance, the command palette — is still open; see
+> [ROADMAP.md](ROADMAP.md).
 
 ![Oaklands Wiki](social-preview.png)
 
@@ -45,12 +45,21 @@ their paired capture stay open.
 
 This site does **not** use Material Design 3. That is a deliberate, dated deviation from
 the shared design standard, recorded with its reasoning in
-[docs/standards/design-language.md](docs/standards/design-language.md): Material Design 3
-is application chrome, and it competes with long-form reading.
+[docs/standards/design-language.md](docs/standards/design-language.md).
 
-Instead it uses **Oaklands Reader** — an editorial system where typography is the structure,
-chrome recedes, reference objects read differently from prose on purpose, and category
-identity comes from the game's own material tones.
+It uses **Oaklands Reader v2** — dark by default with a light theme, one variable sans
+throughout, image-forward tiles, depth from a single soft shadow rather than stacked greys,
+and category identity taken from the game's own material tones.
+
+Two things it does that are easy to get wrong:
+
+- **No element renders at browser defaults.** 65 elements get a deliberate treatment; 11 are
+  deliberately left to inherit with the reason recorded. Enforced by a hand-written list,
+  because a guard that only validates the elements already styled passes cleanly on a
+  stylesheet that styles nothing.
+- **The theme control is not a React component.** Article pages ship no JavaScript at all,
+  so a React toggle would be a button that does nothing there. It is a kilobyte of inline
+  script that works on every page.
 
 ## Content, licensing and attribution
 

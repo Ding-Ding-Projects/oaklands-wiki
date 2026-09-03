@@ -419,8 +419,13 @@ async function main() {
     // The first referenced image that we actually hold becomes the article's
     // hero. Never a guess: an image absent from the manifest is simply absent,
     // and the surface renders its own placeholder rather than a broken tag.
+    // Normalise before matching. The manifest is keyed by the API's page title,
+    // which uses SPACES (`Dynamite Stick 1x.png`), while an article's image list
+    // uses UNDERSCORES (`Dynamite_Stick_1x.png`). MediaWiki treats the two as
+    // the same title; a plain lookup does not, and matching them literally left
+    // 371 articles with no art while every part looked correct.
     const hero = (parsed.images ?? [])
-      .map((name) => mediaManifest[name])
+      .map((name) => mediaManifest[name] ?? mediaManifest[name.replace(/_/g, ' ')])
       .find((entry) => entry && entry.file) ?? null;
 
     const record = {

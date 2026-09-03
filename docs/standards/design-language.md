@@ -17,29 +17,43 @@ One system governs everything here — reading surfaces and app-shaped surfaces 
 settings, the command palette and the tab strip alike — so the product never visibly
 changes design language mid-session.
 
-## The system
+## The system (v2)
 
-**Typography is the system.** Body text is 18px on a phone and 19px on a desktop, at a line
-height of 1.7, with the prose column capped near 70 characters. Headings use a display
-serif on a ~1.25 modular scale with tight leading, so structure is legible at a glance
-rather than announced by colour.
+The first version of this design was a book-like editorial system: display serif,
+generous measure, quiet chrome. It was legible, and it read as a *document*. At the
+owner's direction it was replaced with something that reads as *software*.
 
-**Chrome recedes.** A calm paper reading surface, no elevation theatre, no floating action
-button, no tonal layer stack. Structure is carried by rules, spacing and type weight rather
-than filled containers. On phones the primary navigation sits within thumb reach at the
-bottom of the viewport.
+**Dark by default, light on request.** A theme control sits in the header and is applied
+before first paint, so a returning visitor never sees the wrong theme flash. Depth comes
+from one soft ambient shadow plus a light top edge, not from a stack of tonal greys.
 
-**Reference objects read differently from prose, on purpose.** Key facts cards and
-comparison tables are material to look things up in rather than to read through, so they
-take a denser, deliberately tabular treatment with tabular lining numerals and aligned
-units. The visual break between "read this" and "look this up" is the point.
+**One variable sans throughout**, at 17px with a 1.65 line height, and a wide heading scale
+so a page opens with a confident headline rather than a modest one. Negative tracking on
+large type, none on small.
 
-**Colour carries meaning, not decoration.** A restrained neutral base with a single accent,
-plus category identity accents drawn from the real material tones in the game — copper,
-oak, steel, slate. These are small identity marks, never large fills. Colour is never the
-only signal for a state; text or shape always accompanies it.
+**Image-forward.** Category and article tiles carry real archived art at a display size.
+Where the archive holds no image, a tile shows a letterform — never a broken image tag,
+because a fault in the site and a gap in the archive deserve to look different.
 
-**Density is the reader's choice**, alongside theme, fonts and per-element appearance.
+**What survived from v1, because it was right:** a capped reading measure, real type
+hierarchy, colour that carries meaning rather than decorating, and category identity taken
+from the game's own material tones — copper, oak, steel, slate.
+
+**Reference objects still read differently from prose.** Key facts cards and comparison
+tables use tabular lining numerals and aligned units. The break between "read this" and
+"look this up" is the point, and it survived the redesign intact.
+
+**Density is the reader's choice**, alongside theme and the wider appearance controls.
+
+## The theme control is not a React component
+
+Article pages ship no JavaScript bundle at all — they are static text, and sending 200 KB
+to re-render markup that is already correct is pure cost, a thousand times over. A
+React-driven theme toggle would therefore render on those pages as a button that does
+nothing, which is precisely the decorative-control defect these rules forbid elsewhere.
+
+It is about a kilobyte of inline script instead: it applies the stored theme before paint
+and wires the button, on all 1,129 pages, with no bundle required.
 
 ## No element renders at browser defaults
 

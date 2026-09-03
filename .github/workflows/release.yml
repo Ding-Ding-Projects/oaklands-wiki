@@ -1,0 +1,154 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Deliberately NO cancel-in-progress here. This workflow creates a tag and
+# publishes a release; cancelling one partway can strand a tag without its
+# assets. Only the checking workflows get cancelled by a newer push.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0   # line attribution needs real history, not a shallow clone
+
+      - name: Record the start time
+        id: started
+        shell: bash
+        run: echo "at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Build and prerender
+        run: npm run build
+
+      # No tests and no lint run here, by standing policy. The checks below are
+      # build-output assertions, not code-quality gates: they fail only when the
+      # produced artifact is itself wrong.
+      - name: Check the built output
+        run: npm run check:bundle
+
+      - name: Generate and check the wiki mirror
+        run: npm run generate:wiki && npm run check:wiki
+
+      - name: Count lines
+        id: lines
+        shell: bash
+        run: |
+          node scripts/count-lines.mjs > lines.md
+          {
+            echo 'table<<LINES_EOF'
+            cat lines.md
+            echo 'LINES_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Package the site
+        shell: bash
+        run: |
+          cd dist
+          7z a -tzip "../oaklands-wiki-site.zip" . > /dev/null
+          cd ..
+          ls -la oaklands-wiki-site.zip
+
+      - name: Compute the next version
+        id: version
+        shell: bash
+        run: |
+          # Monotonic and unique: no prior release is ever recycled or overwritten.
+          base=$(node -p "require('./package.json').version")
+          stamp=$(date -u +%Y%m%d.%H%M%S)
+          echo "tag=v${base}+${stamp}" >> "$GITHUB_OUTPUT"
+          echo "name=${base} (${stamp})" >> "$GITHUB_OUTPUT"
+
+      - name: Assemble the release notes
+        id: notes
+        shell: bash
+        env:
+          STARTED: ${{ steps.started.outputs.at }}
+          TABLE: ${{ steps.lines.outputs.table }}
+        run: |
+          completed=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          start_s=$(date -u -d "$STARTED" +%s)
+          end_s=$(date -u -d "$completed" +%s)
+          duration=$(printf '%02d:%02d:%02d' $(( (end_s-start_s)/3600 )) $(( ((end_s-start_s)%3600)/60 )) $(( (end_s-start_s)%60 )))
+          articles=$(node -p "require('./data/articles/index.json').length")
+          categories=$(node -p "require('./data/articles/categories.json').length")
+          images=$(node -p "Object.keys(require('./data/media-manifest.json')).length")
+          {
+            echo "Built from \`${GITHUB_SHA}\`."
+            echo
+            echo "**Live site:** https://ding-ding-projects.github.io/oaklands-wiki/"
+            echo "**Wiki mirror:** https://github.com/Ding-Ding-Projects/oaklands-wiki/wiki"
+            echo
+            echo "| | |"
+            echo "|---|---:|"
+            echo "| Articles archived | ${articles} |"
+            echo "| Categories | ${categories} |"
+            echo "| Images archived | ${images} |"
+            echo
+            echo "### Workflow timing"
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Workflow started | \`${STARTED}\` |"
+            echo "| Workflow completed | \`${completed}\` |"
+            echo "| Workflow duration | \`${duration}\` |"
+            echo
+            echo "### Lines of code"
+            echo
+            echo "${TABLE}"
+            echo
+            echo "---"
+            echo
+            echo "Wiki content is CC BY-SA, © its contributors. Site code is Apache-2.0."
+            echo "Unofficial; not affiliated with Typical Developers, Roblox, or Fandom."
+            echo
+            echo "No tests or lint run in CI, by policy. The checks this run performed are"
+            echo "build-output assertions, not code-quality gates."
+          } > notes.md
+          echo "path=notes.md" >> "$GITHUB_OUTPUT"
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.ORG_TOKEN || secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "${{ steps.version.outputs.name }}" \
+            --notes-file notes.md \
+            --target "${GITHUB_SHA}" \
+            oaklands-wiki-site.zip
+
+      - name: Verify the published release rather than assuming it
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.ORG_TOKEN || secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          tag="${{ steps.version.outputs.tag }}"
+          state=$(gh release view "$tag" --repo "${GITHUB_REPOSITORY}" --json isDraft,targetCommitish,assets)
+          echo "$state"
+          node -e '
+            const s = JSON.parse(process.argv[1]);
+            const problems = [];
+            if (s.isDraft) problems.push("release is a draft");
+            if (!s.assets || s.assets.length === 0) problems.push("release has no assets");
+            if (problems.length) { console.error(problems.join("; ")); process.exit(1); }
+            console.log("release verified: published, " + s.assets.length + " asset(s)");
+          ' "$state"
