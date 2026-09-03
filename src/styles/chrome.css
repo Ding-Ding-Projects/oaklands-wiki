@@ -345,3 +345,11 @@ html { font-size: calc(100% * var(--ok-font-scale, 1)); }
 .ok-moles button[data-mole] { background: var(--ok-accent-soft); border-color: var(--ok-accent); }
 
 blockquote { margin-block: var(--ok-space-3); }
+
+.ok-code {
+  font-family: var(--ok-font-mono);
+  font-size: var(--ok-size-h4);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ok-accent);
+}

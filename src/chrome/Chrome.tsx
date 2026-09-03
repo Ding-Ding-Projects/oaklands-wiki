@@ -11,6 +11,9 @@ import { AttentionBar } from './AttentionBar';
 import { TabStrip } from './TabStrip';
 import { ElementMenu, applyElementAppearance } from './ElementMenu';
 import { SupportTickets } from './LockSurfaces';
+import { HistoryPanel } from './HistoryPanel';
+import { Authenticator } from './Authenticator';
+import { record, diffSettings } from '../lib/history';
 import { Narrator } from '../lib/narrator';
 
 /**
@@ -30,6 +33,8 @@ export function Chrome() {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [storageBlocked, setStorageBlocked] = useState(false);
   const [ticketsOpen, setTicketsOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const stateRef = useRef(state);
   stateRef.current = state;
   const narrator = useMemo(() => new Narrator(() => stateRef.current), []);
@@ -75,7 +80,19 @@ export function Chrome() {
   );
 
   const update = useCallback(<K extends keyof VisitorState>(key: K, value: VisitorState[K]) => {
-    setState((current) => ({ ...current, [key]: value }));
+    setState((current) => {
+      const next = { ...current, [key]: value };
+      // Record what CHANGED, not that something did. An unchanged save records
+      // nothing, so the panel stays a list of real events.
+      const changes = diffSettings(
+        current as unknown as Record<string, unknown>,
+        next as unknown as Record<string, unknown>,
+      );
+      if (changes.length > 0) {
+        record({ action: 'changed', subject: String(key), summary: changes.join('; '), snapshot: current });
+      }
+      return next;
+    });
     narrator.say('setting', `${String(key)} changed`, `${String(key)} 改咗`);
   }, [narrator]);
 
@@ -117,6 +134,12 @@ export function Chrome() {
         >
           ⌘ Commands
         </button>
+        <button type="button" className="ok-chip" aria-haspopup="dialog" onClick={() => setHistoryOpen(true)}>
+          ⏱ History
+        </button>
+        <button type="button" className="ok-chip" aria-haspopup="dialog" onClick={() => setAuthOpen(true)}>
+          🔑 Codes
+        </button>
         <NotificationCentre notices={notices} onDismiss={(id) => setNotices((n) => n.filter((x) => x.id !== id))} />
       </div>
 
@@ -131,6 +154,20 @@ export function Chrome() {
           t={t}
         />
       ) : null}
+
+      {historyOpen ? (
+        <HistoryPanel
+          onRestore={(entry) => {
+            if (entry.snapshot && typeof entry.snapshot === 'object') {
+              setState(entry.snapshot as VisitorState);
+              notify({ kind: 'success', title: 'Restored', body: `Settings from ${new Date(entry.at).toLocaleString()}.` });
+            }
+          }}
+          onClose={() => setHistoryOpen(false)}
+        />
+      ) : null}
+
+      {authOpen ? <Authenticator onClose={() => setAuthOpen(false)} /> : null}
 
       {ticketsOpen ? (
         <SupportTickets

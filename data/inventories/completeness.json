@@ -266,8 +266,12 @@
     },
     {
       "id": "F-026",
-      "title": "Local history, exports in every faithful format, bulk actions",
-      "state": "open"
+      "title": "Append-only local history, exports in eight formats, bulk actions",
+      "state": "built",
+      "implementation": [
+        "src/lib/history.ts",
+        "src/chrome/HistoryPanel.tsx"
+      ]
     },
     {
       "id": "F-027",
@@ -276,8 +280,15 @@
     },
     {
       "id": "F-028",
-      "title": "Local authenticator, QR pairing, personal-vocabulary upload",
-      "state": "open"
+      "title": "Local authenticator with in-process QR pairing",
+      "state": "built",
+      "implementation": [
+        "src/lib/qr.ts",
+        "src/chrome/Authenticator.tsx"
+      ],
+      "tests": [
+        "scripts/test-locks.mjs"
+      ]
     },
     {
       "id": "F-029",
