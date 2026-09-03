@@ -7,7 +7,7 @@ to **Changed approach** with the reason rather than being ticked or quietly dele
 
 Each item corresponds to a row in [`data/inventories/completeness.json`](data/inventories/completeness.json),
 which fails closed on any row without its implementation, documentation and evidence.
-Current state: **34 of 34 rows built**.
+Current state: **38 of 38 rows built**.
 
 ## Phase 1 — Foundation and hosting
 
@@ -40,11 +40,11 @@ Current state: **34 of 34 rows built**.
 - [x] Redirects resolved; unresolved links render as honest plain text, never dead hrefs
 - [x] Attribution on every article: revision, contributors, timestamp, licence, source link
 - [x] GitHub wiki generator, with a coverage and link-integrity guard
-- [x] Wiki pushed — 1,130 pages live, all 5,602 internal links resolve
+- [x] Wiki pushed — 1,213 pages live, all 6,646 internal links resolve
 
 ## Phase 2.5 — Design reference
 
-- [x] Nine reference screens checked into `design/`, each pinned to a complete tuple
+- [x] 13 reference screens checked into `design/`, each pinned to a complete tuple
       (route, state, theme, viewport, scale) and digest-locked
 - [x] Per-screen parity inventory at [`design/parity-inventory.json`](design/parity-inventory.json)
 - [x] Parity guard proved red-then-green — eight mutations, each caught
@@ -70,7 +70,7 @@ Current state: **34 of 34 rows built**.
 - [x] Command palette on `Ctrl+Shift+F` with rich inline setting controls
 - [x] Non-blocking notifications and a reviewable centre
 - [x] Accessibility and responsive sizing verified at 320px and 100–200% scale — 40
-      surface/viewport combinations, all clean
+      surface/viewport combinations, now 55 including occlusion, all clean
 
 ## Phase 5 — Surface contract, part B
 
@@ -83,10 +83,30 @@ Current state: **34 of 34 rows built**.
 ## Phase 6 — Media and release
 
 - [x] Archived media committed at display size — 2,386 WebP thumbnails, about 46MB
-- [x] Real captures from the built site — nine reference screens plus four differentiation captures
+- [x] Real captures from the built site — 13 reference screens plus four differentiation captures
 - [x] Offline documentation, changelog viewer with commit links, status surface
 - [x] Tagged releases with line counts, timing and a dim sum code name
 - [ ] **Screen recording of the built site** — not done. Captures exist; a recording does not.
+
+## Phase 7 — Everything reachable, and a guide
+
+- [x] No redirects: every destination is a page here. Internal links that went
+      nowhere fell from **1,970 to 16**, and those sixteen are the source wiki's own
+      machinery (`Special:`, `User:`, `Module:`) which genuinely has no equivalent
+- [x] 83 alternate names carry their own page, content and all, with a canonical link
+      to the primary article — and share the articles' slug disambiguation, which 20 of
+      them needed
+- [x] 836 file pages, 827 with the archived image and 9 recorded as not archived
+- [x] `Category:` and navigation-template links resolve to the category pages that
+      already existed — 1,063 link occurrences that had been rendering as plain text
+- [x] Master search on every one of the 2,053 pages, as a plain form so it works on the
+      static article pages that never hydrate
+- [x] `/search/` over one index of every article, alias, category, file and page —
+      2,053 entries, 119KB gzipped, fetched only there and guarded out of the bundle
+- [x] `/money/` — 144 items from 446 sell-side prices, ranked by earnings and by a
+      difficulty computed independently of price
+- [x] Occlusion check in the site auditor, after a fixed overlay was found covering the
+      first 240px of every desktop page while 55 combinations reported clean
 
 ## Extras beyond the original plan
 

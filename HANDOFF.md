@@ -10,7 +10,7 @@ Two surfaces, both live, both generated from one corpus so they cannot disagree:
 - **Site** — `https://ding-ding-projects.github.io/oaklands-wiki/`
 - **Wiki mirror** — `https://github.com/Ding-Ding-Projects/oaklands-wiki/wiki`
 
-The completeness inventory stands at **34 of 34 rows built**. Each row names its
+The completeness inventory stands at **38 of 38 rows built**. Each row names its
 implementation, documentation and evidence, and the guard fails when any named artefact is
 missing — which it did during this pass, on a documentation path that had been written into
 a row before the file existed.
@@ -31,9 +31,12 @@ a row before the file existed.
 | Settings surface | Language modes, funny levels, appearance, per-element editors, palette, notifications |
 | Locks, ladder, School mode, narrator, schedules, history, exports, converter, authenticator | Built; see the inventory rows for each |
 | No element at browser defaults | 68 styled, 11 deliberately inherited with reasons |
-| GitHub wiki mirror | 1,130 pages, all 5,602 internal links resolve |
-| Accessibility, measured on the built site | 40 surface/viewport combinations, all clean |
-| Design references and source differentiation | 9 pinned reference screens, 9 differentiation rows with paired captures |
+| GitHub wiki mirror | 1,213 pages, all 6,646 internal links resolve |
+| Accessibility, measured on the built site | 55 surface/viewport combinations including occlusion, all clean |
+| Design references and source differentiation | 13 pinned reference screens, 9 differentiation rows with paired captures |
+| Every destination reachable | Unresolved internal links down from 1,970 to 16; 83 alternate-name pages, 836 file pages |
+| Master search + `/search/` | On all 2,053 pages as a plain form; one index of 2,053 entries |
+| Money guide at `/money/` | 144 items, earnings and difficulty computed independently |
 | Root build scripts | `build.bat`, `download-dependencies.bat`, both with `/s` |
 | Release workflow | Timing, line counts, published-release verification |
 
@@ -115,6 +118,27 @@ forbidden phrases in plaintext, in a public repository, which is the failure it 
 prevent. It holds 63 one-way digests now. The trade is stated in the file: a digest set
 cannot be reviewed by reading it, and a phrase absent from the set cannot be caught, so it
 is a backstop against an accidental paste rather than a proof of sanitisation.
+
+**A fixed overlay is invisible to every layout check.** The tab strip is
+`position: fixed` at 15rem with nothing offsetting the page for it, so it sat on top of
+the first 240px of every desktop page — permanently, for every visitor, since it was
+built. Fifty-five surface-and-viewport combinations passed the whole time, because an
+out-of-flow element causes no overflow, breaks no assertion and clips nothing: every
+check was looking at the content, and the content was fine. It was found in a capture,
+by eye. The auditor now probes three points just inside `main` and asks the document what
+is actually on top there — measuring the two boxes against each other is the only way to
+see this class of defect.
+
+**A count typed into a string drifts within the hour.** The master search placeholder
+said "2,051 pages" while the index held 2,053, on all 2,053 pages. It reads the index now
+— by NAMED import, so the bundler drops the 549KB of entries rather than inlining them to
+read one integer, and a guard fails the build if a default import ever puts them back.
+
+**A price field can be a buy price.** 398 items carrying `Price` also carry a `Shop` or
+`Cost` field. The first money guide read those as income and ranked a $10,000,000
+shop-bought warhead — the largest money sink in the game — as the best earner. Only
+sell-side fields count now, and the unit comes from the value rather than the field name:
+a beehive's `Log` is a flat $1389, not per stud.
 
 ## Verification, and where the evidence lives
 

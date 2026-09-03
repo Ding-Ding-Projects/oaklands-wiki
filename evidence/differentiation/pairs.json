@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-09-03T20:03:36.044Z",
+  "capturedAt": "2026-09-03T21:23:59.804Z",
   "pairs": [
     {
       "article": "Copper",
@@ -10,12 +10,12 @@
         "mobile": true
       },
       "ours": {
-        "bytes": 393462,
-        "sha256": "9e278b954fac96fc018bfdfbc181d55a0fa77b16942fb31a441112ccee0e7e33"
+        "bytes": 403250,
+        "sha256": "76cf6ac70261dc49477bcaf3f930ec541c29e78330bebe062eb8d1bec74af6b2"
       },
       "theirs": {
-        "bytes": 87326,
-        "sha256": "f33a91da763dbe44376700cd8cd42e3522a16fe8eebd02f7558284b7855ed846"
+        "bytes": 95511,
+        "sha256": "5f2320973a28acea09022e568bc271511c08bc5eecb079ef294b70b15177af09"
       }
     },
     {
@@ -27,12 +27,12 @@
         "mobile": true
       },
       "ours": {
-        "bytes": 355223,
-        "sha256": "cdf286144a98c984b13eb4a760191b2a5c16f482e34ae8a1d20cd3e8faf6f853"
+        "bytes": 364744,
+        "sha256": "be7c7b6eed387fdca4648e6b0b8d98613dfba3f680f903bf7730844ba382d41a"
       },
       "theirs": {
-        "bytes": 86051,
-        "sha256": "e97c9301aedb14705f6dd0a731c790cd912ede1cf32caae794069ed6174cb590"
+        "bytes": 330778,
+        "sha256": "97a53c4a6d8448dadd2ff8a77b26b6eb4d76c1df5873c832c1551fae2b4b098c"
       }
     }
   ]

@@ -120,6 +120,60 @@ Measured on the live site rather than asserted:
 | Browse filtering | 1,063 rows narrow to 87 on "C", starting at Cactus |
 | Theme control | present and functional on every page, including the script-free article pages |
 
+## Everything is reachable
+
+The source wiki sends you elsewhere in three ways, and each one left a hole here.
+Internal links that went nowhere fell from **1,970 to 16**:
+
+| Link kind | Occurrences | Now goes to |
+|---|---:|---|
+| `Category:…` | 885 | the category page, which already existed |
+| `File:…` | 891 | one of 836 new file pages |
+| `Template:… Nav` | 178 | the category that navigation box lists |
+| Alternate names | — | a page of their own, content and all |
+| `Special:` `User:` `Module:` | 16 | still plain text, on purpose |
+
+Those last sixteen are the source wiki's own machinery — a What-links-here query, an
+upload form, contributor pages. A static archive has nothing to point them at, so they
+say so rather than pretending. Detail in
+[docs/features/no-redirects.md](docs/features/no-redirects.md).
+
+## Search
+
+A search field in the top bar of **all 2,053 pages**, as a plain `<form method="get">`.
+Most of this site is prerendered HTML that never hydrates, so a search needing
+JavaScript would be decoration on the majority of it. Enter reaches `/search/`, which
+holds one index over every article, alternate name, category, file and standing page —
+2,053 entries, 119KB gzipped, fetched only there.
+
+## Making money
+
+At [`/money/`](https://ding-ding-projects.github.io/oaklands-wiki/money/): every sell
+price the wiki records, ranked by what it earns **and** by how hard it is to get.
+
+The two are computed separately, and that is the whole point. Scoring difficulty from
+value and then ranking by value is circular — every expensive thing comes out "hard" by
+construction, and "worth a lot, easy to reach" becomes impossible to express. So
+difficulty reads only region, processing steps and obtainability, never price.
+
+Which is how the useful answer surfaces: **Magnetite, $600 a stud, on the starting
+island, difficulty 1.5.**
+
+Three defects were caught while building it, each of which would have shipped a
+confidently wrong guide:
+
+- The generic `Price` field is what a thing **costs**. 398 items carrying it also carry a
+  `Shop` or `Cost` field. Reading those as income put a $10,000,000 shop-bought warhead —
+  the biggest money sink in the game — at number one.
+- The unit comes from the value, never the field name. A beehive's `Log` is a flat
+  `$1389`, not per stud; trusting the label put it thirty times above every real per-stud
+  price. Per-stud and per-item are separate tables now, and never compared.
+- The event-currency filter caught `❅` U+2745 and missed `❄️` U+2744, so a log priced at
+  one snowflake per stud was read as one dollar.
+
+The method is published on the page itself, so a reader can disagree with the model
+rather than with the conclusion. Detail in
+[docs/features/money-guide.md](docs/features/money-guide.md).
 ## Side by side with the source
 
 The source wiki being hard to read is why this project exists, so "visibly different" is a

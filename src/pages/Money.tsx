@@ -118,8 +118,8 @@ export function Money({ data }: { data: MoneyData }) {
         <section className="ok-callout">
           <h2>If you are starting out</h2>
           <p>
-            The best money on the easiest ground, from {data.counts.perStud} per-stud prices. Nothing
-            here needs a boat trip or a hazard suit.
+            The best money on the easiest ground, out of the {data.counts.perStud} items priced per
+            stud. Nothing here needs a boat trip or a hazard suit.
           </p>
           <ul className="ok-rows">
             {starters.map((row) => (
