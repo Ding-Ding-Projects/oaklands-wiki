@@ -48,23 +48,46 @@ function headFor({ title, description, canonical }) {
 }
 
 async function main() {
-  const { render } = await import(pathToFileURL(path.join(ROOT, 'dist-ssr', 'entry-server.js')).href);
+  const { render, THEME_INLINE_SCRIPT } = await import(pathToFileURL(path.join(ROOT, 'dist-ssr', 'entry-server.js')).href);
   const list = JSON.parse(await readFile(path.join(ROOT, 'data', 'routes.json'), 'utf8'));
   if (!Array.isArray(list) || list.length === 0) {
     throw new Error('data/routes.json is empty — refusing to prerender nothing');
   }
 
-  const template = await readFile(path.join(DIST, 'index.html'), 'utf8');
+  let template = await readFile(path.join(DIST, 'index.html'), 'utf8');
+  // Applied before paint so a returning visitor never sees the wrong theme flash.
+  template = template.replace('</head>', '<script>' + THEME_INLINE_SCRIPT + '</script></head>');
   if (!template.includes('<!--app-html-->')) {
     throw new Error('dist/index.html is missing the <!--app-html--> placeholder');
   }
 
+  // Payloads for the routes that need data. A route listed in routes.json but
+  // missing its payload file renders its honest fallback rather than a blank.
+  const payloadFor = async (id) => {
+    const file = { home: 'home.json', browse: 'browse.json' }[id];
+    if (!file) return undefined;
+    try {
+      return JSON.parse(await readFile(path.join(ROOT, 'data', 'articles', file), 'utf8'));
+    } catch {
+      console.log(`prerender: no ${file} — ${id} will render without data`);
+      return undefined;
+    }
+  };
+
   let written = 0;
   for (const route of list) {
     const canonical = absolute(route.path === '/' ? '' : `${route.path.replace(/^\//, '')}/`);
-    const html = template
-      .replace('<!--app-html-->', render(route.id))
+    const payload = await payloadFor(route.id);
+    let html = template
+      .replace('<!--app-html-->', render(route.id, payload))
       .replace(/<title>.*?<\/title>/s, headFor({ ...route, canonical }));
+    if (payload) {
+      const encoded = JSON.stringify(payload).replace(/</g, '\\u003c');
+      html = html.replace(
+        '</body>',
+        `<script>window.__PAGE_ROUTE__=${JSON.stringify(route.id)};window.__PAGE_DATA__=${encoded}</script></body>`,
+      );
+    }
     if (/<meta name="description"[^>]*>[^]*<meta name="description"/.test(html)) {
       throw new Error(`duplicate description meta on ${route.path}`);
     }
@@ -135,7 +158,7 @@ async function main() {
         description: `Every article in ${readable}: ${category.count} pages archived from the Oaklands community wiki, searchable by plain text or regular expression.`,
         canonical,
       }))
-      .replace('</body>', `<script>window.__PAGE_DATA__=${payload}</script></body>`);
+      .replace('</body>', `<script>window.__PAGE_ROUTE__="category";window.__PAGE_DATA__=${payload}</script></body>`);
 
     const outDir = path.join(DIST, 'category', category.slug);
     await mkdir(outDir, { recursive: true });

@@ -19,7 +19,8 @@
     "check:completeness": "node scripts/check-completeness.mjs",
     "check:completeness:self-test": "node scripts/check-completeness.mjs --self-test",
     "check:elements": "node scripts/check-elements.mjs",
-    "check:elements:self-test": "node scripts/check-elements.mjs --self-test"
+    "check:elements:self-test": "node scripts/check-elements.mjs --self-test",
+    "check:wiki": "node scripts/check-wiki.mjs"
   },
   "dependencies": {
     "node-html-parser": "^7.0.1",

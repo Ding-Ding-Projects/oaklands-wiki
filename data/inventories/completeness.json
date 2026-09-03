@@ -127,8 +127,14 @@
     },
     {
       "id": "F-011",
-      "title": "GitHub wiki mirror generated and pushed",
-      "state": "open"
+      "title": "GitHub wiki mirror generated (push blocked until the wiki repo exists)",
+      "state": "built",
+      "implementation": [
+        "scripts/generate-wiki.mjs"
+      ],
+      "guards": [
+        "scripts/check-wiki.mjs"
+      ]
     },
     {
       "id": "F-012",

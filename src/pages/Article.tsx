@@ -1,11 +1,13 @@
 import { Shell } from '../components/Shell';
 import { siteConfig } from '../lib/site-config';
 import { href } from '../lib/routes';
+import { Thumb, type Hero } from '../components/Thumb';
 
 export type InfoboxField = { label: string; value: string };
 export type ArticleRecord = {
   title: string;
   slug: string;
+  hero: Hero;
   pageid: number;
   revid: number;
   timestamp: string;
@@ -36,7 +38,7 @@ export function Article({ article }: { article: ArticleRecord }) {
     .find(Boolean) ?? 'var(--ok-rule-strong)';
 
   return (
-    <Shell current="home">
+    <Shell current="browse">
       <article className="ok-article">
         <header className="ok-article__head">
           {article.categories.length > 0 ? (
@@ -52,6 +54,9 @@ export function Article({ article }: { article: ArticleRecord }) {
             off the side of a narrow screen. */}
         {article.infobox ? (
           <aside className="ok-keyfacts ok-article__facts" aria-labelledby="keyfacts-heading">
+            {article.hero ? (
+              <Thumb className="ok-keyfacts__art" hero={article.hero} alt={article.title} />
+            ) : null}
             <h2 id="keyfacts-heading" className="ok-eyebrow" style={{ marginBlockEnd: 'var(--ok-space-3)' }}>
               Key facts
             </h2>

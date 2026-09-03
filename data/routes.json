@@ -1,4 +1,5 @@
 [
-  { "id": "home",  "path": "/",      "title": "Oaklands Wiki", "description": "A reading-first encyclopedia for Oaklands, the Roblox game by Typical Developers. An unofficial CC BY-SA archive of the community wiki." },
-  { "id": "about", "path": "/about", "title": "About — Oaklands Wiki", "description": "What this site is, where its content comes from, how it is licensed, and what is not built yet." }
+  { "id": "home",   "path": "/",        "title": "Oaklands Wiki", "description": "A complete, reading-first archive of the Oaklands community wiki: every article, searchable, with the facts up front. Unofficial and CC BY-SA." },
+  { "id": "browse", "path": "/browse/", "title": "Browse — Oaklands Wiki", "description": "Every archived Oaklands article, filterable by first letter, category and item type, searchable by plain text or regular expression." },
+  { "id": "about",  "path": "/about/",  "title": "About — Oaklands Wiki", "description": "What this site is, where its content comes from, how it is licensed, and what is not built yet." }
 ]

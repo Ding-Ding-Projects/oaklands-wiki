@@ -1,17 +1,22 @@
-import { Home } from './pages/Home';
+import { Home, type HomeData } from './pages/Home';
 import { About } from './pages/About';
 import { Article, type ArticleRecord } from './pages/Article';
 import { Category, type CategoryRecord } from './pages/Category';
-import type { RouteId } from './lib/routes';
+import { Browse, type BrowseData } from './pages/Browse';
 
 export type AppProps = {
-  route: RouteId | 'article' | 'category';
+  route: 'home' | 'about' | 'article' | 'category' | 'browse';
+  home?: HomeData;
   article?: ArticleRecord;
   category?: CategoryRecord;
+  browse?: BrowseData;
 };
 
-export function App({ route, article, category }: AppProps) {
+export function App({ route, home, article, category, browse }: AppProps) {
   if (route === 'article' && article) return <Article article={article} />;
   if (route === 'category' && category) return <Category category={category} />;
-  return route === 'about' ? <About /> : <Home />;
+  if (route === 'browse' && browse) return <Browse data={browse} />;
+  if (route === 'about') return <About />;
+  if (home) return <Home data={home} />;
+  return <About />;
 }

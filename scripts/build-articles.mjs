@@ -362,6 +362,15 @@ async function main() {
 
   const files = new Set(await readdir(parsedDir));
 
+  // Images we actually hold. Absent manifest = no images yet, which is a normal
+  // early state and must not stop the build.
+  let mediaManifest = {};
+  try {
+    mediaManifest = JSON.parse(await readFile(path.join(ROOT, 'data', 'media-manifest.json'), 'utf8'));
+  } catch {
+    console.log('build-articles: no media manifest yet — articles will carry no hero image');
+  }
+
   /*
    * MediaWiki titles are case-sensitive after the first letter, so `Acid staff`
    * and `Acid Staff` are two genuinely different pages. Filesystems on Windows
@@ -407,9 +416,17 @@ async function main() {
     const { html: body, sections } = sanitiseBody(parsed.html, { resolveTitle, slugOf: slugForTitle });
     unresolvedLinks += (body.match(/data-unresolved="1"/g) ?? []).length;
 
+    // The first referenced image that we actually hold becomes the article's
+    // hero. Never a guess: an image absent from the manifest is simply absent,
+    // and the surface renders its own placeholder rather than a broken tag.
+    const hero = (parsed.images ?? [])
+      .map((name) => mediaManifest[name])
+      .find((entry) => entry && entry.file) ?? null;
+
     const record = {
       title: article.title,
       slug: uniqueSlug.get(article.pageid),
+      hero: hero ? { file: hero.file, width: hero.width, height: hero.height } : null,
       pageid: article.pageid,
       revid: parsed.revid ?? article.revid,
       timestamp: article.timestamp,
@@ -423,6 +440,7 @@ async function main() {
 
     index.push({
       title: record.title, slug: record.slug, pageid: record.pageid,
+      hero: record.hero,
       categories: record.categories, infoboxType: infobox?.type ?? null,
     });
   }
@@ -437,7 +455,7 @@ async function main() {
     for (const category of entry.categories ?? []) {
       if (!byCategory.has(category)) byCategory.set(category, []);
       byCategory.get(category).push({
-        title: entry.title, slug: entry.slug, infoboxType: entry.infoboxType,
+        title: entry.title, slug: entry.slug, infoboxType: entry.infoboxType, hero: entry.hero,
       });
     }
   }
@@ -451,7 +469,38 @@ async function main() {
     .filter((category) => category.count > 0)
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
+  // A category tile shows the first image any of its members has, so a category
+  // is never represented by a blank square while its articles have art.
+  for (const category of categories) {
+    category.hero = category.articles.find((a) => a.hero)?.hero ?? null;
+  }
+
   await writeFile(path.join(OUT, 'categories.json'), `${JSON.stringify(categories, null, 0)}\n`, 'utf8');
+
+  // Home: the twelve largest categories plus a dozen articles that have art.
+  const home = {
+    categories: categories.slice(0, 12).map((c) => ({ name: c.name, slug: c.slug, count: c.count, hero: c.hero })),
+    featured: index.filter((entry) => entry.hero).slice(0, 12).map((entry) => ({
+      title: entry.title, slug: entry.slug, hero: entry.hero, infoboxType: entry.infoboxType,
+    })),
+    totals: {
+      articles: index.length,
+      categories: categories.length,
+      images: Object.keys(mediaManifest).length,
+    },
+  };
+  await writeFile(path.join(OUT, 'home.json'), `${JSON.stringify(home, null, 0)}\n`, 'utf8');
+
+  // Browse: every article, with the values its filters actually use.
+  const browse = {
+    articles: index.map((entry) => ({
+      title: entry.title, slug: entry.slug, hero: entry.hero,
+      categories: entry.categories ?? [], infoboxType: entry.infoboxType,
+    })),
+    categories: categories.map((c) => ({ name: c.name, slug: c.slug, count: c.count })),
+    types: [...new Set(index.map((e) => e.infoboxType).filter(Boolean))].sort(),
+  };
+  await writeFile(path.join(OUT, 'browse.json'), `${JSON.stringify(browse, null, 0)}\n`, 'utf8');
   const uncategorised = index.filter((entry) => (entry.categories ?? []).length === 0).length;
   console.log(`build-articles: ${categories.length} categories, ${uncategorised} article(s) carry none`);
 

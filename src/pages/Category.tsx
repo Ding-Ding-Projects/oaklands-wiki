@@ -2,8 +2,9 @@ import { useCallback, useState } from 'react';
 import { Shell } from '../components/Shell';
 import { SearchWithRegex, useSearchFilter, type SearchMode } from '../components/SearchWithRegex';
 import { href } from '../lib/routes';
+import { Thumb, type Hero } from '../components/Thumb';
 
-export type CategoryMember = { title: string; slug: string; infoboxType: string | null };
+export type CategoryMember = { title: string; slug: string; infoboxType: string | null; hero: Hero };
 export type CategoryRecord = { name: string; slug: string; count: number; articles: CategoryMember[] };
 
 const ACCENTS: Record<string, string> = {
@@ -24,7 +25,7 @@ export function Category({ category }: { category: CategoryRecord }) {
   const accent = ACCENTS[category.name] ?? 'var(--ok-rule-strong)';
 
   return (
-    <Shell current="home">
+    <Shell current="browse">
       <p className="ok-eyebrow" style={{ color: accent }}>Category</p>
       <h1>{category.name.replace(/_/g, ' ')}</h1>
       <p className="ok-lede" style={{ marginBlockStart: 'var(--ok-space-3)', maxWidth: 'var(--ok-measure)' }}>
@@ -50,12 +51,13 @@ export function Category({ category }: { category: CategoryRecord }) {
           article titles only.
         </p>
       ) : (
-        <ul className="ok-catgrid" style={{ marginBlockStart: 'var(--ok-space-5)' }}>
+        <ul className="ok-rows" style={{ marginBlockStart: 'var(--ok-space-5)' }}>
           {results.map((member) => (
             <li key={member.slug}>
-              <a className="ok-cat" href={href(`/wiki/${member.slug}/`)} style={{ ['--ok-cat-accent' as string]: accent }}>
-                <span className="ok-cat__name">{member.title}</span>
-                {member.infoboxType ? <span className="ok-cat__count">{member.infoboxType}</span> : null}
+              <a className="ok-row" href={href(`/wiki/${member.slug}/`)}>
+                <Thumb className="ok-row__thumb" hero={member.hero} alt={member.title} />
+                <span className="ok-row__name">{member.title}</span>
+                {member.infoboxType ? <span className="ok-row__meta">{member.infoboxType}</span> : null}
               </a>
             </li>
           ))}

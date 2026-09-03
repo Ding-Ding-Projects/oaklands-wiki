@@ -1,82 +1,93 @@
 import { Shell } from '../components/Shell';
+import { Thumb, type Hero } from '../components/Thumb';
 import { siteConfig } from '../lib/site-config';
 import { href } from '../lib/routes';
-import { readProvenance, formatBuiltAt } from '../lib/provenance';
 import corpus from '../../data/corpus-summary.json';
 
-const ACCENTS: Record<string, string> = {
-  ores: 'var(--ok-cat-ores)', trees: 'var(--ok-cat-trees)', tools: 'var(--ok-cat-tools)',
-  items: 'var(--ok-cat-items)', locations: 'var(--ok-cat-locations)', structures: 'var(--ok-cat-structures)',
-  logic: 'var(--ok-cat-logic)', vinyls: 'var(--ok-cat-vinyls)', vehicles: 'var(--ok-cat-vehicles)',
-  events: 'var(--ok-cat-events)', npcs: 'var(--ok-cat-npcs)',
+export type HomeData = {
+  categories: { name: string; slug: string; count: number; hero: Hero }[];
+  featured: { title: string; slug: string; hero: Hero; infoboxType: string | null }[];
+  totals: { articles: number; categories: number; images: number };
 };
 
-function capturedOn(iso: string): string {
-  const date = new Date(iso);
-  return Number.isNaN(date.getTime())
-    ? 'an unrecorded date'
-    : new Intl.DateTimeFormat(undefined, { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
-}
+const ACCENTS: Record<string, string> = {
+  Ores: 'var(--ok-cat-ores)', Trees: 'var(--ok-cat-trees)', Tools: 'var(--ok-cat-tools)',
+  Items: 'var(--ok-cat-items)', Locations: 'var(--ok-cat-locations)',
+  Structures: 'var(--ok-cat-structures)', Logic: 'var(--ok-cat-logic)',
+  Vinyls: 'var(--ok-cat-vinyls)', Vehicles: 'var(--ok-cat-vehicles)',
+  Events: 'var(--ok-cat-events)', NPCs: 'var(--ok-cat-npcs)',
+};
 
-export function Home() {
-  const provenance = readProvenance();
+export function Home({ data }: { data: HomeData }) {
   return (
     <Shell current="home">
-      <p className="ok-eyebrow">Unofficial encyclopedia</p>
-      <h1>Oaklands</h1>
-      <div className="ok-prose" style={{ marginBlockStart: 'var(--ok-space-4)' }}>
-        <p className="ok-lede">
-          A reading-first archive of the community wiki for{' '}
+      <section className="ok-hero">
+        <p className="ok-eyebrow">Unofficial encyclopedia</p>
+        <h1>Everything in Oaklands, finally readable.</h1>
+        <p className="ok-hero__lede">
+          A complete archive of the community wiki for{' '}
           <a href={siteConfig.gameUrl} rel="noopener noreferrer">Oaklands</a>, the Roblox game
-          by {siteConfig.developer} — rebuilt so it is actually readable on a phone.
+          by {siteConfig.developer} — rebuilt for a phone, with the facts up front.
         </p>
-        <p>
-          <strong>{corpus.captured.articles.toLocaleString()}</strong> articles are captured here,
-          written by <strong>{corpus.editors.toLocaleString()}</strong> editors and taken from the
-          source wiki on {capturedOn(corpus.capturedAt)}. The source reports{' '}
-          {corpus.sourceReports.articles.toLocaleString()} articles and{' '}
-          {corpus.sourceReports.images.toLocaleString()} media files in its own statistics — a
-          slightly different count, because it counts pages differently.
-        </p>
-      </div>
+        <ul className="ok-hero__stats">
+          <li><b>{data.totals.articles.toLocaleString()}</b><span>Articles</span></li>
+          <li><b>{data.totals.categories}</b><span>Categories</span></li>
+          <li><b>{data.totals.images.toLocaleString()}</b><span>Images</span></li>
+          <li><b>{corpus.editors.toLocaleString()}</b><span>Editors credited</span></li>
+        </ul>
+      </section>
 
-      <h2 style={{ marginBlockStart: 'var(--ok-space-7)' }}>Browse</h2>
-      <ul className="ok-catgrid" style={{ marginBlockStart: 'var(--ok-space-4)' }}>
-        {corpus.categories.map((category) => (
+      <div className="ok-section-head">
+        <h2>Browse by category</h2>
+        <a className="ok-chip" href={href('/browse/')}>All {data.totals.categories} →</a>
+      </div>
+      <ul className="ok-tiles">
+        {data.categories.map((category) => (
           <li key={category.slug}>
             <a
-              className="ok-cat"
-              href={href(`/category/${category.name}/`)}
-              style={{ ['--ok-cat-accent' as string]: ACCENTS[category.slug] ?? 'var(--ok-rule-strong)' }}
+              className="ok-tile"
+              href={href(`/category/${category.slug}/`)}
+              style={{ ['--ok-cat-accent' as string]: ACCENTS[category.name] ?? 'var(--ok-rule-strong)' }}
             >
-              <span className="ok-cat__name">{category.name}</span>
-              <span className="ok-cat__count">
-                {category.count} {category.count === 1 ? 'article' : 'articles'}
+              <Thumb className="ok-tile__art" hero={category.hero} alt={category.name.replace(/_/g, ' ')} />
+              <span className="ok-tile__body">
+                <span className="ok-tile__name">{category.name.replace(/_/g, ' ')}</span>
+                <span className="ok-tile__meta">{category.count} articles</span>
               </span>
             </a>
           </li>
         ))}
       </ul>
 
-      <div className="ok-note" style={{ marginBlockStart: 'var(--ok-space-6)', maxWidth: 'var(--ok-measure)' }}>
+      <div className="ok-section-head">
+        <h2>Start somewhere</h2>
+        <a className="ok-chip" href={href('/browse/')}>Search everything →</a>
+      </div>
+      <ul className="ok-tiles">
+        {data.featured.map((article) => (
+          <li key={article.slug}>
+            <a className="ok-tile" href={href(`/wiki/${article.slug}/`)}>
+              <Thumb className="ok-tile__art" hero={article.hero} alt={article.title} />
+              <span className="ok-tile__body">
+                <span className="ok-tile__name">{article.title}</span>
+                {article.infoboxType ? <span className="ok-tile__meta">{article.infoboxType}</span> : null}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div className="ok-note" style={{ marginBlockStart: 'var(--ok-space-7)', maxWidth: 'var(--ok-measure)' }}>
         <p style={{ margin: 0 }}>
-          <strong>This site is at an early phase.</strong> Every article is archived and
-          readable, and the categories above lead to them. Media is not archived yet, so
-          images render a placeholder naming the file rather than borrowing the source
-          wiki&rsquo;s bandwidth. Comparison tables, language modes and the wider settings
-          surface come later; the{' '}
+          <strong>An archived snapshot, not a live mirror.</strong> Everything here was captured
+          from the source wiki and will drift from it between captures. Corrections belong{' '}
           <a href={siteConfig.sourceWiki} rel="noopener noreferrer nofollow" referrerPolicy="no-referrer">
-            source wiki
-          </a>{' '}
-          remains where edits actually take effect.
+            upstream
+          </a>
+          , where edits actually take effect. Audio and video are not archived yet and show a
+          placeholder naming the file rather than borrowing the source&rsquo;s bandwidth.
         </p>
       </div>
-
-      <p className="ok-muted" style={{ marginBlockStart: 'var(--ok-space-5)', fontSize: 'var(--ok-size-small)' }}>
-        {provenance
-          ? `Running version ${provenance.version}, built ${formatBuiltAt(provenance.builtAt)}.`
-          : 'Build provenance unavailable — this artifact carries no recorded version or build time.'}
-      </p>
     </Shell>
   );
 }
