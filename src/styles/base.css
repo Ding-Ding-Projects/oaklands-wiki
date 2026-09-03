@@ -40,6 +40,11 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: var(--ok-tracking-tight);
   margin: 0;
   text-wrap: balance;
+  /* A single word longer than the column has nowhere to wrap, so `normal` lets it
+     overflow rather than break — at 320px the word "Documentation," alone measured
+     295px in a 288px box and its tail was simply cut off. `break-word` breaks only
+     when a word genuinely cannot fit, so ordinary headings still wrap at spaces. */
+  overflow-wrap: break-word;
 }
 h1 { font-size: var(--ok-size-h1); letter-spacing: var(--ok-tracking-display); }
 h2 { font-size: var(--ok-size-h2); }
