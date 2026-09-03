@@ -1,7 +1,7 @@
 import { Shell } from '../components/Shell';
 import { siteConfig } from '../lib/site-config';
 import { readProvenance, formatBuiltAt } from '../lib/provenance';
-import index from '../../data/category-index.json';
+import corpus from '../../data/corpus-summary.json';
 
 const ACCENTS: Record<string, string> = {
   ores: 'var(--ok-cat-ores)', trees: 'var(--ok-cat-trees)', tools: 'var(--ok-cat-tools)',
@@ -30,15 +30,18 @@ export function Home() {
           by {siteConfig.developer} — rebuilt so it is actually readable on a phone.
         </p>
         <p>
-          The source wiki holds <strong>{index.articles.toLocaleString()}</strong> articles and{' '}
-          <strong>{index.images.toLocaleString()}</strong> media files, captured{' '}
-          {capturedOn(index.capturedAt)}.
+          <strong>{corpus.captured.articles.toLocaleString()}</strong> articles are captured here,
+          written by <strong>{corpus.editors.toLocaleString()}</strong> editors and taken from the
+          source wiki on {capturedOn(corpus.capturedAt)}. The source reports{' '}
+          {corpus.sourceReports.articles.toLocaleString()} articles and{' '}
+          {corpus.sourceReports.images.toLocaleString()} media files in its own statistics — a
+          slightly different count, because it counts pages differently.
         </p>
       </div>
 
       <h2 style={{ marginBlockStart: 'var(--ok-space-7)' }}>Browse</h2>
       <ul className="ok-catgrid" style={{ marginBlockStart: 'var(--ok-space-4)' }}>
-        {index.categories.map((category) => (
+        {corpus.categories.map((category) => (
           <li key={category.slug}>
             <span
               className="ok-cat"

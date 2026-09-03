@@ -1,0 +1,47 @@
+{
+  "recordType": "oaklands-corpus-capture",
+  "schemaVersion": 1,
+  "snapshotId": "2026-09-03T15-47-41-402Z",
+  "startedAt": "2026-09-03T15:47:41.402Z",
+  "completedAt": "2026-09-03T15:48:13.625Z",
+  "importerVersion": "1.0.0",
+  "userAgent": "OaklandsWikiCorpusImporter/1.0 (+https://github.com/Ding-Ding-Projects/oaklands-wiki)",
+  "source": {
+    "origin": "https://oaklands.fandom.com",
+    "api": "https://oaklands.fandom.com/api.php"
+  },
+  "policy": {
+    "robotsStatus": 200,
+    "robotsContentType": "text/plain; charset=UTF-8",
+    "robotsSha256": "6c4611916a83c70b2d45384a902fe19b933681b0363a57432c2393f63da8b264",
+    "verdict": "allowed",
+    "matchedGroup": "*",
+    "matchedRule": "Allow: /api.php?action=",
+    "rightsStatus": 200,
+    "rightsSha256": "aa3eee5bc1af57af5b0e0535855f0ef53231d3173fbbf1c323d23523d2aca25a"
+  },
+  "site": {
+    "generator": "MediaWiki 1.43.9",
+    "sitename": "Oaklands Wiki",
+    "rights": {
+      "url": "https://www.fandom.com/licensing",
+      "text": "CC-BY-SA"
+    },
+    "statistics": {
+      "pages": 4902,
+      "articles": 1066,
+      "edits": 22165,
+      "images": 3355,
+      "users": 43139703,
+      "activeusers": 16,
+      "admins": 9,
+      "jobs": 0
+    }
+  },
+  "counts": {
+    "articles": 1063,
+    "redirects": 90,
+    "categories": 98,
+    "captured": 1063
+  }
+}

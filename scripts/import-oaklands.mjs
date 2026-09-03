@@ -17,7 +17,7 @@ import https from 'node:https';
 import { mkdir, rename, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(ROOT, 'data', 'corpus');
@@ -342,7 +342,7 @@ async function main() {
   }
 }
 
-if (process.argv[1] && import.meta.url === `file://${process.argv[1].replace(/\\/g, '/')}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error) => {
     console.error(`import failed: ${error.message}`);
     process.exit(1);

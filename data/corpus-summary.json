@@ -1,9 +1,22 @@
 {
-  "capturedAt": "2026-09-03T15:31:47.613504Z",
-  "source": "https://oaklands.fandom.com/api.php",
-  "articles": 1066,
-  "pages": 4902,
-  "images": 3355,
+  "snapshotId": "2026-09-03T15-47-41-402Z",
+  "capturedAt": "2026-09-03T15:48:13.625Z",
+  "source": "https://oaklands.fandom.com",
+  "licence": {
+    "url": "https://www.fandom.com/licensing",
+    "text": "CC-BY-SA"
+  },
+  "captured": {
+    "articles": 1063,
+    "redirects": 90,
+    "categories": 98
+  },
+  "sourceReports": {
+    "articles": 1066,
+    "pages": 4902,
+    "images": 3355
+  },
+  "editors": 357,
   "categories": [
     {
       "name": "Ores",
@@ -60,6 +73,5 @@
       "slug": "npcs",
       "count": 23
     }
-  ],
-  "note": "Badges is an article on the source wiki rather than a category, so it is not a grid row."
+  ]
 }

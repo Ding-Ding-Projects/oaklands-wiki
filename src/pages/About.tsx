@@ -1,7 +1,7 @@
 import { Shell } from '../components/Shell';
 import { siteConfig, hasMaintainerAbout } from '../lib/site-config';
 import { readProvenance, formatBuiltAt } from '../lib/provenance';
-import index from '../../data/category-index.json';
+import corpus from '../../data/corpus-summary.json';
 
 export function About() {
   const provenance = readProvenance();
@@ -31,9 +31,17 @@ export function About() {
             {siteConfig.sourceWikiName}
           </a>{' '}
           through its public MediaWiki API, which that wiki&rsquo;s <code>robots.txt</code> explicitly
-          permits. The snapshot behind this build was captured{' '}
-          <strong>{new Date(index.capturedAt).toISOString()}</strong> and records{' '}
-          {index.articles.toLocaleString()} articles across {index.pages.toLocaleString()} pages.
+          permits — the wildcard group carries an explicit <code>Allow: /api.php?action=</code>.
+          The snapshot behind this build is <code>{corpus.snapshotId}</code>, captured{' '}
+          <strong>{corpus.capturedAt}</strong>. It holds{' '}
+          {corpus.captured.articles.toLocaleString()} articles and{' '}
+          {corpus.captured.redirects.toLocaleString()} redirects, written by{' '}
+          {corpus.editors.toLocaleString()} editors.
+        </p>
+        <p>
+          The source reports {corpus.sourceReports.articles.toLocaleString()} articles in its own
+          statistics, which is a slightly different number because it counts pages differently.
+          Both are real; this site says which one it means rather than blurring them.
         </p>
 
         <h2>Licensing</h2>

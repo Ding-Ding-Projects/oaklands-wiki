@@ -32,7 +32,35 @@ async function walk(dir) {
  *  silently empties every derived list and the guard reports clean. */
 const norm = (text) => text.replace(/\r\n/g, '\n');
 
+/**
+ * Refuse to validate a dist older than the sources that should have produced it.
+ *
+ * Without this the guard happily validates the PREVIOUS build: a failed `vite
+ * build` leaves the old output in place, every assertion passes, and the run
+ * reports green for an artifact that no longer corresponds to the tree. That
+ * already happened once here.
+ */
+async function assertDistIsFresh() {
+  const newestSource = async (dir) => {
+    let newest = 0;
+    for (const file of await walk(dir)) {
+      if (/[\/]node_modules[\/]/.test(file)) continue;
+      newest = Math.max(newest, (await stat(file)).mtimeMs);
+    }
+    return newest;
+  };
+  const sources = Math.max(
+    await newestSource(path.join(ROOT, 'src')),
+    await newestSource(path.join(ROOT, 'data')),
+  );
+  const built = (await stat(path.join(DIST, 'index.html'))).mtimeMs;
+  if (sources > built) {
+    fail(`dist is stale: a source file is newer than dist/index.html by ${Math.round((sources - built) / 1000)}s — rebuild before trusting this run`);
+  }
+}
+
 async function main() {
+  await assertDistIsFresh();
   const files = await walk(DIST);
   const html = files.filter((f) => f.endsWith('.html'));
   if (html.length === 0) fail('dist contains no HTML at all');
