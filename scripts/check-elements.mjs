@@ -36,7 +36,7 @@ const REQUIRED = {
   media: ['img', 'video', 'audio', 'picture', 'canvas', 'svg', 'figure', 'figcaption', 'iframe', 'embed', 'object'],
   structure: ['hr', 'details', 'summary', 'dialog'],
   forms: ['button', 'input', 'select', 'textarea', 'label', 'fieldset', 'legend', 'progress', 'meter'],
-  typography: ['h1', 'h2', 'h3', 'h4', 'a', 'body'],
+  typography: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'a', 'body'],
 };
 
 /** Elements deliberately left to inherit, with the reason recorded. */

@@ -20,7 +20,10 @@ body {
 
 .ok-prose { max-width: var(--ok-measure); }
 .ok-prose > * + * { margin-block-start: var(--ok-rhythm); }
-.ok-prose p { margin: 0; }
+/* NB: no blanket `.ok-prose p { margin: 0 }` here. Its specificity (0,1,1)
+   beats the `> * + *` spacing rules (0,1,0), which silently collapsed every
+   paragraph gap to zero while the spacing rules looked perfectly correct.
+   Paragraph margins are reset once, by element, in elements.css. */
 
 h1, h2, h3, h4 {
   font-family: var(--ok-font-display);
