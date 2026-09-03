@@ -63,7 +63,7 @@ a:hover { color: var(--ok-accent-hover); text-decoration-color: currentColor; }
   border-radius: var(--ok-radius-sm);
 }
 
-.ok-prose { max-width: var(--ok-measure); }
+.ok-prose { max-width: var(--ok-measure); overflow-wrap: anywhere; }
 .ok-prose > * + * { margin-block-start: var(--ok-rhythm); }
 /* NB: no blanket `.ok-prose p { margin: 0 }`. Its specificity (0,1,1) beats the
    `> * + *` spacing rules (0,1,0), which silently collapsed every paragraph gap
@@ -501,6 +501,9 @@ main { padding-block: var(--ok-space-6) var(--ok-space-8); }
   white-space: nowrap;
 }
 .ok-sortbutton:hover { color: var(--ok-accent); }
+/* A 19px line box is not a target. Table header buttons get a real one without
+   changing the table's density, because the padding sits inside the cell. */
+.ok-sortbutton { min-height: var(--ok-touch-target); display: inline-flex; align-items: center; }
 .ok-compare__name { display: inline-flex; align-items: center; gap: var(--ok-space-2); text-decoration: none; color: var(--ok-ink); font-weight: var(--ok-weight-medium); }
 .ok-compare__name:hover { color: var(--ok-accent); }
 .ok-compare__name .ok-row__thumb { inline-size: 1.75rem; block-size: 1.75rem; }
@@ -547,15 +550,19 @@ main { padding-block: var(--ok-space-6) var(--ok-space-8); }
 }
 .ok-part[data-selected] { border-color: var(--ok-accent); }
 .ok-part__head { display: flex; align-items: center; justify-content: space-between; font-weight: var(--ok-weight-semibold); }
-.ok-part__head button { background: none; border: 0; min-height: auto; padding: 0 var(--ok-space-1); color: var(--ok-ink-faint); cursor: pointer; }
+.ok-part__head button {
+  background: none; border: 0; cursor: pointer; color: var(--ok-ink-faint);
+  /* Big enough to hit on a touch screen without making the part card larger. */
+  min-height: 1.75rem; min-inline-size: 1.75rem;
+}
 .ok-part__ports { display: flex; justify-content: space-between; gap: var(--ok-space-2); }
 .ok-part__ports > div { display: grid; gap: 4px; }
 .ok-part__control { min-height: 2rem; font-size: var(--ok-size-micro); }
 .ok-part__value { font-family: var(--ok-font-mono); font-size: var(--ok-size-h4); text-align: center; }
-.ok-part__link { font-size: var(--ok-size-micro); }
+.ok-part__link { font-size: var(--ok-size-micro); display: inline-flex; align-items: center; min-height: 1.75rem; }
 
 .ok-port {
-  min-height: 1.25rem; padding: 0 var(--ok-space-2);
+  min-height: 1.75rem; min-inline-size: 2.25rem; padding: 0 var(--ok-space-2);
   font-size: 0.7rem; border-radius: var(--ok-radius-pill);
   background: var(--ok-paper-sunken);
 }

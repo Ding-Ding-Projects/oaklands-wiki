@@ -77,7 +77,12 @@ code {
   border: var(--ok-border) solid var(--ok-rule);
   border-radius: var(--ok-radius-sm);
   padding: 0.1em 0.35em;
-  overflow-wrap: break-word;
+  /* `anywhere`, not `break-word`. A 40-character commit SHA or a snapshot id
+     has no break opportunity at all, so break-word leaves it overflowing — and
+     at 320px that widened the whole document, which then pushed every fixed
+     element sideways. The symptom appeared on the floating toolbar; the cause
+     was a paragraph. */
+  overflow-wrap: anywhere;
 }
 
 pre {

@@ -103,6 +103,21 @@ const AUDIT = `(() => {
     }
   }
 
+  // 2b. WHICH element actually overflows.
+  //
+  // Added after a real miss: the offender scan compared right edges, so it named
+  // the floating toolbar whose right edge had been pushed out, while the actual
+  // cause was a paragraph with an unbreakable 24-character token. An element can
+  // overflow its own box without its right edge exceeding the viewport, so scan
+  // scrollWidth against clientWidth as well.
+  const scrollers = [];
+  for (const el of document.body.querySelectorAll('*')) {
+    if (el.clientWidth > 0 && el.scrollWidth > el.clientWidth + 1 && getComputedStyle(el).overflowX === 'visible') {
+      scrollers.push(el.tagName.toLowerCase() + (el.className ? '.' + String(el.className).split(' ')[0] : '')
+        + ' ' + el.scrollWidth + '>' + el.clientWidth);
+    }
+  }
+
   // 3. Every control has an accessible name.
   const unnamed = [];
   for (const el of document.querySelectorAll('a, button, input, select, textarea')) {
@@ -144,6 +159,8 @@ const AUDIT = `(() => {
     horizontalOverflow: overflow,
     smallTargets: small.slice(0, 8),
     smallTargetCount: small.length,
+    overflowingElements: scrollers.slice(0, 6),
+    overflowingCount: scrollers.length,
     unnamedControls: unnamed.slice(0, 8),
     unnamedControlCount: unnamed.length,
     imagesWithoutAlt: noAlt,
@@ -188,6 +205,7 @@ async function main() {
   const noAlt = results.filter((r) => r.imagesWithoutAlt > 0);
   const badH1 = results.filter((r) => r.h1Count !== 1);
   const tiny = results.filter((r) => r.smallTargetCount > 0);
+  const scrolling = results.filter((r) => r.overflowingCount > 0);
 
   console.log(`\nchecked ${results.length} surface/viewport combinations`);
   console.log(`  horizontal overflow : ${overflowing.length}`);
@@ -195,13 +213,15 @@ async function main() {
   console.log(`  images without alt  : ${noAlt.length}`);
   console.log(`  h1 count not 1      : ${badH1.length}`);
   console.log(`  targets under 24px  : ${tiny.length}`);
+  console.log(`  elements overflowing: ${scrolling.length}`);
 
-  for (const row of [...overflowing, ...unnamed, ...badH1, ...tiny].slice(0, 10)) {
+  for (const row of [...overflowing, ...unnamed, ...badH1, ...tiny, ...scrolling].slice(0, 12)) {
     console.log(`   - ${row.surface} @ ${row.viewport}: ` +
       [row.horizontalOverflow && 'overflow',
        row.unnamedControlCount && `${row.unnamedControlCount} unnamed (${row.unnamedControls.join(', ')})`,
        row.h1Count !== 1 && `${row.h1Count} h1`,
        row.smallTargetCount && `${row.smallTargetCount} small (${row.smallTargets.slice(0, 3).join(', ')})`,
+       row.overflowingCount && `${row.overflowingCount} overflowing (${row.overflowingElements.slice(0, 3).join(', ')})`,
       ].filter(Boolean).join('; '));
   }
 
