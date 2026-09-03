@@ -430,6 +430,31 @@ async function main() {
   index.sort((a, b) => a.title.localeCompare(b.title));
   await writeFile(path.join(OUT, 'index.json'), `${JSON.stringify(index, null, 0)}\n`, 'utf8');
 
+  // Category browse. Built from the categories each article actually carries,
+  // not from a curated list, so a category cannot silently lose members.
+  const byCategory = new Map();
+  for (const entry of index) {
+    for (const category of entry.categories ?? []) {
+      if (!byCategory.has(category)) byCategory.set(category, []);
+      byCategory.get(category).push({
+        title: entry.title, slug: entry.slug, infoboxType: entry.infoboxType,
+      });
+    }
+  }
+  const categories = [...byCategory.entries()]
+    .map(([name, members]) => ({
+      name,
+      slug: slugFor(name),
+      count: members.length,
+      articles: members.sort((a, b) => a.title.localeCompare(b.title)),
+    }))
+    .filter((category) => category.count > 0)
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+
+  await writeFile(path.join(OUT, 'categories.json'), `${JSON.stringify(categories, null, 0)}\n`, 'utf8');
+  const uncategorised = index.filter((entry) => (entry.categories ?? []).length === 0).length;
+  console.log(`build-articles: ${categories.length} categories, ${uncategorised} article(s) carry none`);
+
   if (index.length === 0) throw new Error('built no articles — refusing to report success');
 
   console.log(`build-articles: ${index.length} articles, ${withInfobox} with a typed infobox`);

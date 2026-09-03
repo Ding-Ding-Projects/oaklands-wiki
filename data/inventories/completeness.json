@@ -133,7 +133,12 @@
     {
       "id": "F-012",
       "title": "Category browse with per-surface search and anchored regex builder",
-      "state": "open"
+      "state": "built",
+      "implementation": [
+        "src/pages/Category.tsx",
+        "src/components/SearchWithRegex.tsx",
+        "scripts/build-articles.mjs"
+      ]
     },
     {
       "id": "F-013",

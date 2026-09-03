@@ -1,5 +1,6 @@
 import { Shell } from '../components/Shell';
 import { siteConfig } from '../lib/site-config';
+import { href } from '../lib/routes';
 import { readProvenance, formatBuiltAt } from '../lib/provenance';
 import corpus from '../../data/corpus-summary.json';
 
@@ -43,30 +44,31 @@ export function Home() {
       <ul className="ok-catgrid" style={{ marginBlockStart: 'var(--ok-space-4)' }}>
         {corpus.categories.map((category) => (
           <li key={category.slug}>
-            <span
+            <a
               className="ok-cat"
-              aria-disabled="true"
+              href={href(`/category/${category.name}/`)}
               style={{ ['--ok-cat-accent' as string]: ACCENTS[category.slug] ?? 'var(--ok-rule-strong)' }}
             >
               <span className="ok-cat__name">{category.name}</span>
               <span className="ok-cat__count">
                 {category.count} {category.count === 1 ? 'article' : 'articles'}
               </span>
-            </span>
+            </a>
           </li>
         ))}
       </ul>
 
       <div className="ok-note" style={{ marginBlockStart: 'var(--ok-space-6)', maxWidth: 'var(--ok-measure)' }}>
         <p style={{ margin: 0 }}>
-          <strong>This site is at an early phase and is deliberately thin.</strong> The category
-          counts above are real and freshly captured, but the articles themselves are not imported
-          yet, so nothing here links through to an article. Browsing, article pages, search and
-          media all land in later phases. Until then the{' '}
+          <strong>This site is at an early phase.</strong> Every article is archived and
+          readable, and the categories above lead to them. Media is not archived yet, so
+          images render a placeholder naming the file rather than borrowing the source
+          wiki&rsquo;s bandwidth. Comparison tables, language modes and the wider settings
+          surface come later; the{' '}
           <a href={siteConfig.sourceWiki} rel="noopener noreferrer nofollow" referrerPolicy="no-referrer">
             source wiki
           </a>{' '}
-          remains the place to read.
+          remains where edits actually take effect.
         </p>
       </div>
 

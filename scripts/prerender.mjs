@@ -113,6 +113,37 @@ async function main() {
   }
   if (articleIndex.length > 0) console.log(`prerender: ${articleIndex.length} article route(s)`);
 
+  // ---- Category routes --------------------------------------------------
+  // These DO hydrate: the search field and its regex builder are real
+  // interaction, so the payload is inlined and the client entry picks it up.
+  let categories = [];
+  try {
+    categories = JSON.parse(await readFile(path.join(ROOT, 'data', 'articles', 'categories.json'), 'utf8'));
+  } catch {
+    console.log('prerender: no categories.json — skipping category routes');
+  }
+
+  for (const category of categories) {
+    const canonical = absolute(`category/${category.slug}/`);
+    const readable = category.name.replace(/_/g, ' ');
+    // JSON embedded in a script element must not be able to close it early.
+    const payload = JSON.stringify(category).replace(/</g, '\\u003c');
+    const html = template
+      .replace('<!--app-html-->', render('category', category))
+      .replace(/<title>.*?<\/title>/s, headFor({
+        title: `${readable} — Oaklands Wiki`,
+        description: `Every article in ${readable}: ${category.count} pages archived from the Oaklands community wiki, searchable by plain text or regular expression.`,
+        canonical,
+      }))
+      .replace('</body>', `<script>window.__PAGE_DATA__=${payload}</script></body>`);
+
+    const outDir = path.join(DIST, 'category', category.slug);
+    await mkdir(outDir, { recursive: true });
+    await writeFile(path.join(outDir, 'index.html'), html, 'utf8');
+    written += 1;
+  }
+  if (categories.length > 0) console.log(`prerender: ${categories.length} category route(s)`);
+
   // GitHub Pages serves 404.html for unknown paths.
   await writeFile(path.join(DIST, '404.html'), await readFile(path.join(DIST, 'index.html'), 'utf8'), 'utf8');
   // Tell Pages not to run the built output through Jekyll.

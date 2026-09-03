@@ -273,3 +273,34 @@ main { padding-block: var(--ok-space-6) var(--ok-space-8); }
   .ok-article__body { grid-area: body; }
   .ok-attribution { grid-area: attr; }
 }
+
+/* ---- Search with its anchored regex builder ---------------------------- */
+
+.ok-search { margin-block-start: var(--ok-space-5); max-width: var(--ok-measure-wide); position: relative; }
+.ok-search__row { display: flex; flex-direction: column; gap: var(--ok-space-2); }
+.ok-search__label { font-weight: var(--ok-weight-medium); color: var(--ok-ink-muted); }
+.ok-search__field { display: flex; gap: var(--ok-space-2); }
+.ok-search__field input { flex: 1; min-width: 0; }
+.ok-search__builder-toggle { white-space: nowrap; font-family: var(--ok-font-mono); }
+.ok-search__status { margin-block-start: var(--ok-space-2); font-size: var(--ok-size-small); color: var(--ok-ink-muted); }
+
+/* The builder paints its own surface, stays inside the viewport, and scrolls
+   internally rather than clipping whatever does not fit. */
+.ok-search__builder {
+  margin-block-start: var(--ok-space-3);
+  border: var(--ok-border) solid var(--ok-rule-strong);
+  border-radius: var(--ok-radius);
+  background: var(--ok-paper-raised);
+  padding: var(--ok-space-4);
+  max-height: min(60vh, 32rem);
+  overflow-y: auto;
+}
+.ok-search__builder > * + * { margin-block-start: var(--ok-space-4); }
+.ok-search__modes, .ok-search__flags { display: flex; flex-wrap: wrap; gap: var(--ok-space-3) var(--ok-space-4); }
+.ok-search__modes label, .ok-search__flags label {
+  display: flex; align-items: center; gap: var(--ok-space-2);
+  min-height: var(--ok-touch-target); cursor: pointer;
+}
+.ok-search__tokens > div { display: flex; flex-wrap: wrap; gap: var(--ok-space-2); margin-block-start: var(--ok-space-2); }
+.ok-search__tokens button { min-height: var(--ok-touch-target); padding-inline: var(--ok-space-3); }
+.ok-search__engine { font-size: var(--ok-size-micro); color: var(--ok-ink-faint); line-height: var(--ok-leading-snug); }
