@@ -157,8 +157,13 @@
     },
     {
       "id": "F-014",
-      "title": "Browser-style tab strip, left-docked, with the four tab searches",
-      "state": "open"
+      "title": "Tab strip: docking, overflow, pin, group, four searches, bulk closes",
+      "state": "built",
+      "implementation": [
+        "src/lib/tabs.ts",
+        "src/chrome/TabStrip.tsx",
+        "src/styles/chrome.css"
+      ]
     },
     {
       "id": "F-015",

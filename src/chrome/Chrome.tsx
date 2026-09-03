@@ -8,6 +8,7 @@ import { SettingsPanel } from './SettingsPanel';
 import { CommandPalette } from './CommandPalette';
 import { NotificationCentre, type Notice } from './NotificationCentre';
 import { AttentionBar } from './AttentionBar';
+import { TabStrip } from './TabStrip';
 import { Narrator } from '../lib/narrator';
 
 /**
@@ -88,6 +89,7 @@ export function Chrome() {
 
   return (
     <>
+      <TabStrip />
       <AttentionBar state={state} />
 
       <div className="ok-chrome-bar">

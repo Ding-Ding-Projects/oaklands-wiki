@@ -205,3 +205,98 @@ html { font-size: calc(100% * var(--ok-font-scale, 1)); }
 [data-school-mode] [data-capability='cantonese'],
 [data-school-mode] [data-capability='funny'],
 [data-school-mode] [data-capability='dim-sum'] { display: none !important; }
+
+/* ---- Tab strip ---------------------------------------------------------- */
+
+/* Docks to any edge; left by default. A screen is wider than it is tall and a
+   tab label is wider than it is high, so a vertical strip shows more tabs
+   legibly than the horizontal one every browser trained everyone to expect. */
+.ok-tabstrip {
+  position: fixed;
+  z-index: 25;
+  display: flex;
+  background: color-mix(in srgb, var(--ok-paper-raised) 94%, transparent);
+  backdrop-filter: blur(12px);
+  border: var(--ok-border) solid var(--ok-rule);
+}
+.ok-tabstrip[data-dock='left'], .ok-tabstrip[data-dock='right'] {
+  inset-block: var(--ok-topbar-height) var(--ok-bottomnav-height);
+  inline-size: var(--ok-tabstrip-width);
+  flex-direction: column;
+}
+.ok-tabstrip[data-dock='left'] { inset-inline-start: 0; }
+.ok-tabstrip[data-dock='right'] { inset-inline-end: 0; }
+.ok-tabstrip[data-dock='top'], .ok-tabstrip[data-dock='bottom'] {
+  inset-inline: 0;
+  block-size: 2.75rem;
+  flex-direction: row;
+  align-items: center;
+}
+.ok-tabstrip[data-dock='top'] { inset-block-start: var(--ok-topbar-height); }
+.ok-tabstrip[data-dock='bottom'] { inset-block-end: var(--ok-bottomnav-height); }
+
+.ok-tabstrip__head { display: flex; gap: var(--ok-space-1); padding: var(--ok-space-2); }
+.ok-tabstrip__list {
+  flex: 1; min-inline-size: 0; min-block-size: 0;
+  overflow: auto;
+  display: flex; flex-direction: inherit; gap: 2px;
+  padding: var(--ok-space-2);
+}
+.ok-tabstrip[data-dock='top'] .ok-tabstrip__list,
+.ok-tabstrip[data-dock='bottom'] .ok-tabstrip__list { flex-direction: row; align-items: center; }
+
+.ok-tab {
+  display: flex; align-items: center; gap: var(--ok-space-2);
+  min-height: var(--ok-touch-target);
+  padding: var(--ok-space-2) var(--ok-space-3);
+  border-radius: var(--ok-radius-sm);
+  border-inline-start: 3px solid var(--ok-group-colour, transparent);
+  text-decoration: none;
+  color: var(--ok-ink-muted);
+  font-size: var(--ok-size-small);
+  /* A sideways word is a word nobody reads: labels stay horizontal at every dock. */
+  white-space: nowrap;
+}
+.ok-tab:hover { background: var(--ok-paper-hover); color: var(--ok-ink); }
+.ok-tab[aria-selected='true'] { background: var(--ok-accent-soft); color: var(--ok-accent); }
+.ok-tab[data-pinned] { order: -1; }
+.ok-tab__label { overflow: hidden; text-overflow: ellipsis; }
+
+.ok-tabgroup { display: flex; flex-direction: inherit; gap: 2px; }
+.ok-tabgroup__head {
+  display: flex; align-items: center; gap: var(--ok-space-2);
+  background: none; border: 0; padding: var(--ok-space-2) var(--ok-space-3);
+  min-height: var(--ok-touch-target);
+  font-size: var(--ok-size-micro); text-transform: uppercase;
+  letter-spacing: var(--ok-tracking-wide); color: var(--ok-ink-faint); cursor: pointer;
+}
+.ok-tabgroup__dot {
+  inline-size: 0.6rem; block-size: 0.6rem; border-radius: 50%;
+  background: var(--ok-group-colour, var(--ok-rule-strong)); flex: none;
+}
+
+/* At narrow widths a side strip would eat the content it exists to reveal. */
+@media (max-width: 60rem) {
+  .ok-tabstrip[data-dock='left'], .ok-tabstrip[data-dock='right'] { display: none; }
+}
+
+.ok-tabmenu {
+  position: fixed; z-index: 70;
+  min-inline-size: 16rem;
+  padding: var(--ok-space-2);
+  background: var(--ok-paper-raised);
+  border: var(--ok-border) solid var(--ok-rule-strong);
+  border-radius: var(--ok-radius);
+  box-shadow: var(--ok-shadow-lifted);
+}
+.ok-tabmenu__filter { inline-size: 100%; margin-block-end: var(--ok-space-2); }
+.ok-tabmenu__item {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--ok-space-4);
+  inline-size: 100%; text-align: start;
+  background: none; border: 0; border-radius: var(--ok-radius-sm);
+  padding: var(--ok-space-2) var(--ok-space-3);
+  min-height: var(--ok-touch-target);
+  color: var(--ok-ink); font-size: var(--ok-size-small); cursor: pointer;
+}
+.ok-tabmenu__item:hover { background: var(--ok-paper-hover); }
+.ok-tabmenu__empty { margin: 0; padding: var(--ok-space-2); color: var(--ok-ink-faint); font-size: var(--ok-size-small); }
