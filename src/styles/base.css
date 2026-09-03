@@ -821,7 +821,15 @@ main { padding-block: var(--ok-space-6) var(--ok-space-8); }
   color: var(--ok-ink-muted);
   max-inline-size: 28rem;
 }
-.ok-slider input { inline-size: 100%; min-block-size: var(--ok-touch-target); }
+/* A range input carries a default ~2px horizontal margin, so `inline-size: 100%`
+   makes it exactly that much wider than the label containing it — measured as
+   360 in a 358 box at every viewport. The width was never the problem. */
+.ok-slider { min-inline-size: 0; }
+.ok-slider input {
+  inline-size: 100%;
+  margin-inline: 0;
+  min-block-size: var(--ok-touch-target);
+}
 
 .ok-method { margin-block-start: var(--ok-space-4); display: grid; gap: var(--ok-space-3); }
 .ok-method dt {

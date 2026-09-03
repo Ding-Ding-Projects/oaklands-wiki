@@ -40,6 +40,9 @@ const SURFACES = [
   { id: 'about', path: '/about/' },
   { id: 'article', path: '/wiki/Copper/' },
   { id: 'category', path: '/category/Ores/' },
+  { id: 'money', path: '/money/' },
+  { id: 'search', path: '/search/?q=copper' },
+  { id: 'file', path: '/file/Altar1.png/' },
 ];
 
 async function connect() {
@@ -193,7 +196,8 @@ async function main() {
       // cache but not an edge that serves stale HTML, and stale HTML points at
       // the previous CSS hash — so the audit measures a build that is no longer
       // deployed and reports defects that were fixed an hour ago.
-      await send('Page.navigate', { url: `${ORIGIN}${surface.path}?v=${RUN_ID}` });
+      const join = surface.path.includes('?') ? '&' : '?';
+      await send('Page.navigate', { url: `${ORIGIN}${surface.path}${join}v=${RUN_ID}` });
       await new Promise((r) => setTimeout(r, 2200));
       const audit = await send('Runtime.evaluate', { returnByValue: true, expression: AUDIT });
       results.push({ surface: surface.id, viewport: viewport.name, tuple: viewport, ...audit.result.value });
