@@ -265,7 +265,15 @@ main { padding-block: var(--ok-space-6) var(--ok-space-8); }
 .ok-tile__meta { font-size: var(--ok-size-micro); color: var(--ok-ink-faint); font-variant-numeric: tabular-nums lining-nums; }
 
 /* Compact list rows, for long result sets where tiles would be noise. */
-.ok-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--ok-space-2); }
+/* A GRID item's default min-width is `auto` too, exactly like a flex item's, so
+   giving the row and its name a zero minimum was not enough — the <li> between
+   them still refused to shrink. Both levels need it. */
+.ok-rows {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--ok-space-2);
+  grid-template-columns: minmax(0, 1fr);
+}
+.ok-rows > li { min-inline-size: 0; }
 .ok-row {
   display: flex;
   align-items: center;
