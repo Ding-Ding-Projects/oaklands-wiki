@@ -98,17 +98,32 @@
     {
       "id": "F-008",
       "title": "Article routes, sanitisation, typed infobox extraction",
-      "state": "open"
+      "state": "built",
+      "implementation": [
+        "scripts/build-articles.mjs",
+        "src/pages/Article.tsx",
+        "scripts/import-parsed.mjs"
+      ],
+      "guards": [
+        "scripts/check-static-bundle.mjs"
+      ]
     },
     {
       "id": "F-009",
       "title": "Per-article attribution: revision, contributors, timestamp, licence",
-      "state": "open"
+      "state": "built",
+      "implementation": [
+        "src/pages/Article.tsx"
+      ]
     },
     {
       "id": "F-010",
       "title": "Redirects resolved; unresolved links never render as dead hrefs",
-      "state": "open"
+      "state": "built",
+      "implementation": [
+        "scripts/import-redirect-targets.mjs",
+        "scripts/build-articles.mjs"
+      ]
     },
     {
       "id": "F-011",

@@ -201,3 +201,72 @@ main { padding-block: var(--ok-space-6) var(--ok-space-8); }
     scroll-behavior: auto !important;
   }
 }
+
+/* ---- Article ----------------------------------------------------------- */
+
+.ok-article { display: grid; gap: var(--ok-rhythm); }
+.ok-article__head > * + * { margin-block-start: var(--ok-space-2); }
+.ok-article__body > * + * { margin-block-start: var(--ok-rhythm); }
+.ok-article__body h2 { margin-block-start: var(--ok-space-7); }
+.ok-article__body h3 { margin-block-start: var(--ok-space-5); }
+
+.ok-toc {
+  border-block: var(--ok-border) solid var(--ok-rule);
+  padding-block: var(--ok-space-3);
+}
+.ok-toc ul {
+  list-style: none;
+  padding: 0;
+  margin-block-start: var(--ok-space-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ok-space-2) var(--ok-space-4);
+}
+.ok-toc li { margin: 0; padding: 0; }
+.ok-toc a { font-size: var(--ok-size-small); }
+
+.ok-media-placeholder {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ok-space-2);
+  padding: var(--ok-space-2) var(--ok-space-3);
+  border: var(--ok-border) dashed var(--ok-rule-strong);
+  border-radius: var(--ok-radius);
+  background: var(--ok-paper-sunken);
+  color: var(--ok-ink-faint);
+  font-size: var(--ok-size-micro);
+  line-height: var(--ok-leading-snug);
+}
+.ok-media-placeholder::before { content: '▢'; }
+
+/* A link the archive cannot resolve is plain text, never a dead href. It still
+   reads as a name rather than vanishing into the sentence. */
+[data-unresolved] {
+  color: var(--ok-ink-faint);
+  border-block-end: 1px dotted var(--ok-rule-strong);
+}
+
+.ok-attribution {
+  margin-block-start: var(--ok-space-7);
+  border-block-start: var(--ok-border) solid var(--ok-rule);
+  padding-block-start: var(--ok-space-4);
+  font-size: var(--ok-size-small);
+  color: var(--ok-ink-muted);
+  max-width: var(--ok-measure);
+}
+.ok-attribution > * + * { margin-block-start: var(--ok-space-3); }
+
+/* Wide enough for two columns: facts sit beside the prose instead of above it. */
+@media (min-width: 64rem) {
+  .ok-article {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    grid-template-areas: 'head facts' 'toc facts' 'body facts' 'attr facts';
+    align-items: start;
+    column-gap: var(--ok-space-6);
+  }
+  .ok-article__head { grid-area: head; }
+  .ok-article__facts { grid-area: facts; position: sticky; inset-block-start: calc(var(--ok-topbar-height) + var(--ok-space-4)); }
+  .ok-toc { grid-area: toc; }
+  .ok-article__body { grid-area: body; }
+  .ok-attribution { grid-area: attr; }
+}

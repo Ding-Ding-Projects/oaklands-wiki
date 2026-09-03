@@ -1,8 +1,11 @@
 import { StrictMode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { App } from './App';
-import type { RouteId } from './lib/routes';
+import { App, type AppProps } from './App';
 
-export function render(route: RouteId): string {
-  return renderToStaticMarkup(<StrictMode><App route={route} /></StrictMode>);
+export function render(route: AppProps['route'], article?: AppProps['article']): string {
+  return renderToStaticMarkup(
+    <StrictMode>
+      <App route={route} article={article} />
+    </StrictMode>,
+  );
 }

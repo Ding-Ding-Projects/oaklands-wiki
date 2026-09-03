@@ -22,6 +22,7 @@
     "check:elements:self-test": "node scripts/check-elements.mjs --self-test"
   },
   "dependencies": {
+    "node-html-parser": "^7.0.1",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },

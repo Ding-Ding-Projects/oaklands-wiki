@@ -76,6 +76,43 @@ async function main() {
     console.log(`prerendered ${route.path} -> ${path.relative(ROOT, path.join(outDir, 'index.html'))}`);
   }
 
+  // ---- Article routes -------------------------------------------------
+  // Every captured article gets its own prerendered page. These carry no
+  // hydration script: the body is static text, so shipping ~200 KB of
+  // JavaScript to re-render markup that is already correct would be pure cost.
+  let articleIndex = [];
+  try {
+    articleIndex = JSON.parse(await readFile(path.join(ROOT, 'data', 'articles', 'index.json'), 'utf8'));
+  } catch {
+    console.log('prerender: no data/articles/index.json — skipping article routes');
+  }
+
+  const scriptTag = /<script type="module"[^>]*><\/script>/;
+  for (const entry of articleIndex) {
+    const record = JSON.parse(
+      await readFile(path.join(ROOT, 'data', 'articles', `${entry.pageid}.json`), 'utf8'),
+    );
+    // The sanitiser leaves a base-path placeholder so the corpus stays portable
+    // between a Pages sub-path and any other deployment.
+    record.body = record.body.replaceAll('__BASE__', BASE.replace(/\/$/, ''));
+
+    const canonical = absolute(`wiki/${record.slug}/`);
+    const description = record.infobox
+      ? `${record.title} — ${record.infobox.fields.slice(0, 3).map((f) => `${f.label}: ${f.value}`).join(', ')}. From the Oaklands community wiki.`
+      : `${record.title} — an article archived from the Oaklands community wiki.`;
+
+    const html = template
+      .replace('<!--app-html-->', render('article', record))
+      .replace(/<title>.*?<\/title>/s, headFor({ title: `${record.title} — Oaklands Wiki`, description, canonical }))
+      .replace(scriptTag, '');
+
+    const outDir = path.join(DIST, 'wiki', record.slug);
+    await mkdir(outDir, { recursive: true });
+    await writeFile(path.join(outDir, 'index.html'), html, 'utf8');
+    written += 1;
+  }
+  if (articleIndex.length > 0) console.log(`prerender: ${articleIndex.length} article route(s)`);
+
   // GitHub Pages serves 404.html for unknown paths.
   await writeFile(path.join(DIST, '404.html'), await readFile(path.join(DIST, 'index.html'), 'utf8'), 'utf8');
   // Tell Pages not to run the built output through Jekyll.

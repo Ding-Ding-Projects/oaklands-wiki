@@ -114,6 +114,26 @@ async function main() {
     if (body.length < 500) fail(`${rel}: prerendered body is empty or near-empty`);
   }
 
+  // 6b. Every article in the index has its own prerendered page.
+  //
+  // This exists because the counts silently disagreed once: 1,063 articles were
+  // built and 1,059 pages written, because four titles differ only in case and a
+  // case-insensitive filesystem collapsed each pair onto one path. Nothing
+  // failed; four articles simply showed another article's content.
+  try {
+    const index = JSON.parse(await readFile(path.join(ROOT, 'data', 'articles', 'index.json'), 'utf8'));
+    const dirs = new Set(await readdir(path.join(DIST, 'wiki')));
+    const missing = index.filter((entry) => !dirs.has(entry.slug));
+    if (missing.length > 0) {
+      fail(`article coverage: ${missing.length} of ${index.length} article(s) have no prerendered page (first: ${missing[0].title})`);
+    }
+    if (dirs.size !== index.length) {
+      fail(`article coverage: ${index.length} articles in the index but ${dirs.size} directories in dist/wiki`);
+    }
+  } catch (error) {
+    if (!/ENOENT/.test(error.message)) fail(`article coverage: ${error.message}`);
+  }
+
   // 7. The embed graphic exists, is served, and matches the root master byte for byte.
   const master = path.join(ROOT, 'social-preview.png');
   const served = path.join(DIST, 'social-preview.png');
