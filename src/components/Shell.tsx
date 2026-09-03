@@ -3,13 +3,17 @@ import { href } from '../lib/routes';
 import { siteConfig, hasMaintainerAbout } from '../lib/site-config';
 import { readProvenance, formatBuiltAt } from '../lib/provenance';
 import { ThemeToggle } from './ThemeToggle';
+import { MasterSearch } from './MasterSearch';
 
-export function Shell({ current, children }: { current: 'home' | 'about' | 'browse' | 'compare' | 'logic' | 'docs'; children: ReactNode }) {
+type Surface = 'home' | 'about' | 'browse' | 'compare' | 'logic' | 'docs' | 'search' | 'money' | 'file';
+
+export function Shell({ current, children }: { current: Surface; children: ReactNode }) {
   const provenance = readProvenance();
-  const nav: { id: typeof current; label: string; to: string }[] = [
+  const nav: { id: Surface; label: string; to: string }[] = [
     { id: 'home', label: 'Home', to: '/' },
     { id: 'browse', label: 'Browse', to: '/browse/' },
     { id: 'compare', label: 'Compare', to: '/compare/' },
+    { id: 'money', label: 'Money', to: '/money/' },
     { id: 'logic', label: 'Logic lab', to: '/logic/' },
     { id: 'docs', label: 'Docs', to: '/docs/' },
     { id: 'about', label: 'About', to: '/about/' },
@@ -32,6 +36,7 @@ export function Shell({ current, children }: { current: 'home' | 'about' | 'brow
               </a>
             ))}
           </nav>
+          <MasterSearch />
           <ThemeToggle />
         </div>
       </header>

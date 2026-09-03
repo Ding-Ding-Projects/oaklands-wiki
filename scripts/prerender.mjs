@@ -72,6 +72,7 @@ async function main() {
       browse: ['articles', 'browse.json'],
       compare: ['articles', 'comparisons.json'],
       docs: ['generated', 'docs.json'],
+      money: ['generated', 'money.json'],
     }[id];
     if (!source) return undefined;
     const [directory, file] = source;
@@ -190,6 +191,35 @@ async function main() {
     written += 1;
   }
   if (categories.length > 0) console.log(`prerender: ${categories.length} category route(s)`);
+
+  // ---- File routes -----------------------------------------------------
+  // The source wiki gives every file a page and 891 links across the corpus
+  // point at one. Without these they are the largest group of links that go
+  // nowhere: a reader clicking an image caption gets plain text and no way to
+  // see the picture larger or find what else uses it.
+  let fileIndex = [];
+  try {
+    fileIndex = JSON.parse(await readFile(path.join(ROOT, 'data', 'articles', 'files.json'), 'utf8'));
+  } catch {
+    console.log('prerender: no files.json — skipping file routes');
+  }
+
+  for (const file of fileIndex) {
+    const canonical = absolute(`file/${file.slug}/`);
+    const description = file.media
+      ? `${file.name} — an image archived from the Oaklands community wiki, used by ${file.usedBy.length} article${file.usedBy.length === 1 ? '' : 's'}.`
+      : `${file.name} — referenced by the Oaklands community wiki. Not archived here.`;
+
+    const html = template
+      .replace('<!--app-html-->', render('file', file))
+      .replace(new RegExp('<title>[^]*?</title>'), headFor({ title: `${file.name} — Oaklands Wiki`, description, canonical }));
+
+    const outDir = path.join(DIST, 'file', file.slug);
+    await mkdir(outDir, { recursive: true });
+    await writeFile(path.join(outDir, 'index.html'), html, 'utf8');
+    written += 1;
+  }
+  if (fileIndex.length > 0) console.log(`prerender: ${fileIndex.length} file route(s)`);
 
   // GitHub Pages serves 404.html for unknown paths.
   await writeFile(path.join(DIST, '404.html'), await readFile(path.join(DIST, 'index.html'), 'utf8'), 'utf8');

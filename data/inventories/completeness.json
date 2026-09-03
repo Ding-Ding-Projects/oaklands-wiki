@@ -403,6 +403,68 @@
       "tests": [
         "scripts/test-logic-sim.mjs"
       ]
+    },
+    {
+      "id": "F-035",
+      "title": "Master search on every page, with a full search surface behind it",
+      "state": "built",
+      "implementation": [
+        "src/components/MasterSearch.tsx",
+        "scripts/build-search-index.mjs"
+      ],
+      "surfaces": [
+        "src/components/Shell.tsx",
+        "src/pages/Search.tsx"
+      ],
+      "docs": [
+        "docs/features/search.md"
+      ],
+      "note": "A plain GET form in the top bar of all 2,053 pages, so it works on the thousand prerendered article pages that never hydrate. Enter reaches /search/, which searches one index covering every article, alternate name, category, file and standing page — 2,053 entries, 119KB gzipped, fetched only on that page."
+    },
+    {
+      "id": "F-036",
+      "title": "Alternate names are real pages, not redirects",
+      "state": "built",
+      "implementation": [
+        "scripts/build-articles.mjs"
+      ],
+      "surfaces": [
+        "src/pages/Article.tsx"
+      ],
+      "docs": [
+        "docs/features/no-redirects.md"
+      ],
+      "note": "83 titles the source redirects now carry their own page with the same content and a canonical link to the primary article. 20 of their slugs needed disambiguating against an article differing only in capitalisation — the same collision that once silently overwrote four articles."
+    },
+    {
+      "id": "F-037",
+      "title": "Every referenced file has a page",
+      "state": "built",
+      "implementation": [
+        "scripts/build-articles.mjs"
+      ],
+      "surfaces": [
+        "src/pages/FilePage.tsx"
+      ],
+      "docs": [
+        "docs/features/no-redirects.md"
+      ],
+      "note": "836 file pages, 827 with an archived image and 9 recorded honestly as not archived, each listing the articles that use it."
+    },
+    {
+      "id": "F-038",
+      "title": "Money-making guide ranked by earnings and by difficulty",
+      "state": "built",
+      "implementation": [
+        "scripts/build-money-guide.mjs"
+      ],
+      "surfaces": [
+        "src/pages/Money.tsx"
+      ],
+      "docs": [
+        "docs/features/money-guide.md"
+      ],
+      "note": "144 items from 446 sell-side price fields. Difficulty is computed from region, processing steps and obtainability and never from price, so high-value-low-effort is a finding rather than an artefact. Per-stud and per-item prices are ranked separately because they measure different things."
     }
   ]
 }

@@ -1,6 +1,6 @@
 import routeData from '../../data/routes.json';
 
-export type RouteId = 'home' | 'about' | 'browse' | 'compare' | 'logic' | 'docs';
+export type RouteId = 'home' | 'about' | 'browse' | 'compare' | 'logic' | 'docs' | 'search' | 'money' | 'file';
 export type Route = { id: RouteId; path: string; title: string; description: string };
 
 /** Every prerendered route. `scripts/prerender.mjs` reads this same JSON. */
@@ -13,6 +13,17 @@ export function href(path: string): string {
   return path === '/' ? `${BASE}/` : `${BASE}${path}`;
 }
 
+/**
+ * A file served from the site root rather than bundled.
+ *
+ * The search index is fetched at runtime instead of imported, because
+ * bundling half a megabyte of index into every page would make a thousand
+ * article pages pay for a search most visits never run.
+ */
+export function asset(name: string): string {
+  return `${BASE}/${name.startsWith('/') ? name.slice(1) : name}`;
+}
+
 export function routeIdForPath(pathname: string): RouteId {
   const stripped = pathname.startsWith(BASE) ? pathname.slice(BASE.length) : pathname;
   const normalised = (stripped.replace(/\/+$/, '') || '/');
@@ -21,5 +32,7 @@ export function routeIdForPath(pathname: string): RouteId {
   if (normalised === '/compare') return 'compare';
   if (normalised === '/logic') return 'logic';
   if (normalised === '/docs') return 'docs';
+  if (normalised === '/search') return 'search';
+  if (normalised === '/money') return 'money';
   return 'home';
 }

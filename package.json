@@ -10,6 +10,8 @@
   "scripts": {
     "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
     "build:docs": "node scripts/build-docs-and-changelog.mjs",
+    "build:money": "node scripts/build-money-guide.mjs",
+    "build:search": "node scripts/build-search-index.mjs",
     "capture:evidence": "node scripts/capture-evidence.mjs",
     "count:lines": "node scripts/count-lines.mjs",
     "dev": "vite",
@@ -17,7 +19,7 @@
     "generate:wiki": "node scripts/generate-wiki.mjs",
     "import": "node scripts/import-oaklands.mjs",
     "postbuild": "node scripts/check-static-bundle.mjs && node scripts/check-elements.mjs && node scripts/check-completeness.mjs && node scripts/check-parity.mjs && node scripts/check-fonts.mjs",
-    "prebuild": "node scripts/build-docs-and-changelog.mjs",
+    "prebuild": "node scripts/build-docs-and-changelog.mjs && node scripts/build-money-guide.mjs && node scripts/build-search-index.mjs",
     "preview": "vite preview",
     "verify:site": "node scripts/verify-built-site.mjs",
     "check:all": "npm run check:bundle && npm run check:elements && npm run check:completeness && npm run check:parity && npm run check:fonts && npm run check:wiki",

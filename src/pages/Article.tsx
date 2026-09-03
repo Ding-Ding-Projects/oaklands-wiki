@@ -16,6 +16,15 @@ export type ArticleRecord = {
   infobox: { type: string; fields: InfoboxField[] } | null;
   body: string;
   sections: { id: string; text: string }[];
+  /**
+   * Present when this page is one of the source wiki's alternate names.
+   *
+   * The source redirects these, which makes the name itself unreachable: follow
+   * a link to it and you arrive somewhere else with no record that the name you
+   * asked for exists. Here it is a real page carrying the same content, and the
+   * relationship is stated on the page rather than hidden in a hop.
+   */
+  alias?: { of: string; slug: string } | null;
 };
 
 const CATEGORY_ACCENT: Record<string, string> = {
@@ -47,6 +56,14 @@ export function Article({ article }: { article: ArticleRecord }) {
             </p>
           ) : null}
           <h1>{article.title}</h1>
+          {article.alias ? (
+            <p className="ok-alias-note">
+              <strong>{article.title}</strong> is another name for{' '}
+              <a href={href(`/wiki/${article.alias.slug}/`)}>{article.alias.of}</a>. The source wiki
+              redirects this name; here it is a page of its own, with the same content, so the name
+              you asked for stays where you asked for it.
+            </p>
+          ) : null}
         </header>
 
         {/* Key facts sit ABOVE the prose on a phone and beside it when there is

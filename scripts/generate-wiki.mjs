@@ -65,9 +65,16 @@ export function toMarkdown(html, { linkBase }) {
         // target at the first unescaped `)`, so `[X](Page_(disambiguation))`
         // truncates to `Page_(disambiguation` and 404s while looking
         // entirely well-formed in the source.
+        // A GitHub wiki has no file or category pages, so those two link kinds
+        // point at the site, which does. Rewriting them to a wiki page name
+        // would produce a link that is well-formed and 404s — the mirror's own
+        // link check caught 107 of exactly that shape.
+        const offsite = /^__BASE__\/(file|category)\/(.+?)\/?$/.exec(target);
         const resolved = internal
           ? `${linkBase}${internal[1].replace(/\//g, '-').replace(/\(/g, '%28').replace(/\)/g, '%29')}`
-          : target;
+          : offsite
+            ? `${SITE}/${offsite[1]}/${offsite[2].replace(/\(/g, '%28').replace(/\)/g, '%29')}/`
+            : target;
         out += resolved ? `[${inner}](${resolved})` : inner;
       } else if (tag === 'strong' || tag === 'b') out += `**${inner}**`;
       else if (tag === 'em' || tag === 'i') out += `_${inner}_`;

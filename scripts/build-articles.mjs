@@ -165,7 +165,7 @@ const DROP_ATTRIBUTES = [
   'data-image-name', 'data-src', 'data-video-key', 'referrerpolicy', 'loading',
 ];
 
-export function sanitiseBody(html, { resolveTitle, slugOf = slugFor }) {
+export function sanitiseBody(html, { resolveTarget }) {
   let root = parse(html, { blockTextElements: { script: false, style: false } });
 
   for (const selector of CHROME_SELECTORS) {
@@ -241,9 +241,9 @@ export function sanitiseBody(html, { resolveTitle, slugOf = slugFor }) {
     const wiki = /^\/wiki\/([^#?]+)/.exec(href);
     if (wiki) {
       const target = decodeURIComponent(wiki[1]);
-      const resolved = resolveTitle(target);
+      const resolved = resolveTarget(target);
       if (resolved) {
-        anchor.setAttribute('href', `__BASE__/wiki/${slugOf(resolved)}/`);
+        anchor.setAttribute('href', resolved);
         anchor.removeAttribute('title');
       } else {
         // Never emit an href that goes nowhere.
@@ -332,22 +332,116 @@ async function main() {
   const redirectMap = new Map(redirectTargets.map((r) => [r.from.toLowerCase(), r.to]));
   void redirects;
 
-  /** A link target resolves to an article title, or to nothing at all. */
-  const resolveTitle = (target) => {
-    const normalised = titleFromSlug(target).replace(/_/g, ' ');
-    if (byTitle.has(normalised)) return normalised;
+  // A pre-pass, because links are rewritten while each article is sanitised and
+  // the resolver therefore needs to know every destination before the first one
+  // is written. Categories are otherwise only derived at the end, from the very
+  // entries this pass is producing.
+  const FILE_LINK = new RegExp('href="/wiki/File:([^"#?]+)', 'g');
+  const categoryNames = new Set();
+  const referencedFiles = new Map();
+  for (const article of articles) {
+    let parsed;
+    try {
+      parsed = JSON.parse(await readFile(path.join(parsedDir, `${article.pageid}.json`), 'utf8'));
+    } catch { continue; }
+    for (const c of parsed.categories ?? []) categoryNames.add(typeof c === 'string' ? c : c.category ?? c['*']);
+    for (const m of String(parsed.html ?? '').matchAll(FILE_LINK)) {
+      const name = decodeURIComponent(m[1]).replace(/_/g, ' ');
+      referencedFiles.set(name.toLowerCase(), name);
+    }
+  }
+  categoryNames.delete(undefined);
+
+  // Every alternate name becomes a page of its own rather than a redirect, so
+  // a link to one lands on a real address instead of silently becoming the
+  // target's. `Blue mushroom` and `Blue Mushroom` are both pages now.
+  const redirectPageTitles = new Map(redirects.map((r) => [r.title.toLowerCase(), r]));
+
+  // Six of the alternate names point at a category rather than an article —
+  // `Ores`, `Trees`, `Tools` and so on — so they resolve to that category page
+  // instead of becoming an article of their own.
+  const aliasToCategory = new Map();
+  for (const [from, to] of redirectMap) {
+    const m = /^category:(.+)$/i.exec(String(to));
+    if (m) aliasToCategory.set(from, m[1].trim());
+  }
+
+  // A file link goes to that file's own page. Only files this corpus actually
+  // references get one: a page nothing links to is a page nobody reaches.
+  const filePages = new Set(referencedFiles.keys());
+  console.log(`build-articles: ${categoryNames.size} categories, ${redirectPageTitles.size} alternate names and ${filePages.size} referenced files are link destinations`);
+
+  // Category and template link targets, resolved to the pages this site does
+  // have. Every one of the 885 Category: link occurrences in the corpus points
+  // at a category that already has a page here, and all eight navigation
+  // templates name a category too — so both were rendering as plain text while
+  // the destination existed the whole time.
+  const categoryBySlug = new Map([...categoryNames].map((name) => [name.toLowerCase().replace(/_/g, ' '), name]));
+  const TEMPLATE_TO_CATEGORY = new Map([
+    ['locations nav', 'Locations'], ['vinyls nav', 'Vinyls'], ['ore nav', 'Ores'],
+    ['npc nav', 'NPCs'], ['fruits nav', 'Fruits'], ['logic nav', 'Logic'],
+    ['stone nav', 'Stone'], ['items nav', 'Items'],
+  ]);
+  // The source carries a singular that never had a page of its own.
+  const CATEGORY_ALIASES = new Map([['event', 'Events']]);
+
+  /**
+   * A link target resolves to a route on this site, or to nothing at all.
+   *
+   * Returns an href rather than a title, because the destination is no longer
+   * always an article: a category link goes to its category page and a file
+   * link to that file's own page.
+   */
+  const resolveTarget = (target) => {
+    const clean = titleFromSlug(target).replace(/_/g, ' ').trim();
+    const lower = clean.toLowerCase();
+
+    if (lower.startsWith('category:')) {
+      const wanted = lower.slice(9).trim();
+      const name = categoryBySlug.get(wanted) ?? CATEGORY_ALIASES.get(wanted);
+      return name ? `__BASE__/category/${slugFor(name)}/` : null;
+    }
+
+    if (lower.startsWith('template:')) {
+      const name = TEMPLATE_TO_CATEGORY.get(lower.slice(9).trim());
+      return name ? `__BASE__/category/${slugFor(name)}/` : null;
+    }
+
+    if (lower.startsWith('file:')) {
+      const name = clean.slice(5).trim();
+      return filePages.has(name.toLowerCase()) ? `__BASE__/file/${slugFor(name)}/` : null;
+    }
+
+    // Special:, User: and Module: are the source wiki's own machinery — a
+    // What-links-here query, an upload form, a contributor page. They have no
+    // equivalent in a static archive, so they stay plain text on purpose.
+    if (/^(?:special|user|module|help|mediawiki|talk|template talk|user talk):/.test(lower)) return null;
+
+    if (byTitle.has(clean)) return `__BASE__/wiki/${slugForTitle(clean)}/`;
 
     // Case-insensitive second chance: the source carries both `Acid staff` and
     // `Acid Staff`, and a link may point at either.
-    const lower = normalised.toLowerCase();
-    if (lowerToTitle.has(lower)) return lowerToTitle.get(lower);
+    if (lowerToTitle.has(lower)) return `__BASE__/wiki/${slugForTitle(lowerToTitle.get(lower))}/`;
 
-    // Follow one redirect hop, then require a real article at the end of it.
+    // A redirect now has a page of its own rather than being followed here, so
+    // an alternate name keeps its own address instead of silently becoming the
+    // target's. Only fall through to the target if the alias has no page.
+    // Six alternate names point at a category rather than an article, so they
+    // land on that category page instead of an article that does not exist.
+    const asCategory = aliasToCategory.get(lower);
+    if (asCategory) {
+      const name = categoryBySlug.get(asCategory.toLowerCase()) ?? CATEGORY_ALIASES.get(asCategory.toLowerCase());
+      if (name) return `__BASE__/category/${slugFor(name)}/`;
+    }
+    const aliasRecord = redirectPageTitles.get(lower);
+    if (aliasRecord && aliasSlugs.has(aliasRecord.pageid)) {
+      return `__BASE__/wiki/${aliasSlugs.get(aliasRecord.pageid)}/`;
+    }
     const via = redirectMap.get(lower);
     if (via) {
-      if (byTitle.has(via)) return via;
+      if (byTitle.has(via)) return `__BASE__/wiki/${slugForTitle(via)}/`;
       const viaLower = via.toLowerCase();
-      if (lowerToTitle.has(viaLower)) return lowerToTitle.get(viaLower);
+      if (lowerToTitle.has(viaLower)) return `__BASE__/wiki/${slugForTitle(lowerToTitle.get(viaLower))}/`;
     }
     return null;
   };
@@ -404,6 +498,26 @@ async function main() {
       if (position > 0) disambiguated += 1;
     }
   }
+  /**
+   * Alternate names share the article namespace, so they share its collision
+   * rule. 18 of them differ from a real article only in capitalisation
+   * (`Blue pine` beside `Blue Pine`) and two collide with each other, which on
+   * a case-insensitive filesystem is the same directory written twice — the
+   * second silently replacing the first, exactly as four articles once did.
+   * Articles are numbered first so an existing article URL never moves.
+   */
+  const takenSlugs = new Set([...uniqueSlug.values()].map((s) => s.toLowerCase()));
+  const aliasSlugs = new Map();
+  let aliasDisambiguated = 0;
+  for (const redirect of [...redirects].sort((a, b) => a.pageid - b.pageid)) {
+    const base = slugFor(redirect.title);
+    const clash = takenSlugs.has(base.toLowerCase());
+    const slug = clash ? `${base}~${redirect.pageid}` : base;
+    if (clash) aliasDisambiguated += 1;
+    takenSlugs.add(slug.toLowerCase());
+    aliasSlugs.set(redirect.pageid, slug);
+  }
+
 
   for (const article of articles) {
     const file = `${article.pageid}.json`;
@@ -413,7 +527,7 @@ async function main() {
     const infobox = extractInfobox(article.wikitext);
     if (infobox) withInfobox += 1;
 
-    const { html: body, sections } = sanitiseBody(parsed.html, { resolveTitle, slugOf: slugForTitle });
+    const { html: body, sections } = sanitiseBody(parsed.html, { resolveTarget });
     unresolvedLinks += (body.match(/data-unresolved="1"/g) ?? []).length;
 
     // The first referenced image that we actually hold becomes the article's
@@ -449,6 +563,80 @@ async function main() {
       categories: record.categories, infoboxType: infobox?.type ?? null,
     });
   }
+
+  /* ---- Alternate names get real pages, not redirects --------------------
+   *
+   * The source wiki carries 90 titles that redirect elsewhere. Following them
+   * at link-rewrite time made those names unreachable: type one in, or follow
+   * a link to one, and you silently arrived somewhere else with no record that
+   * the name you asked for existed. Each is a page here instead, carrying the
+   * same content under its own address.
+   *
+   * The content is deliberately duplicated rather than summarised, because a
+   * thin page that says "see over there" is a redirect with extra steps. A
+   * canonical link points at the primary article so a search engine treats the
+   * pair as one page rather than as duplicate content — which is the correct
+   * technical tool for this, where an HTTP redirect is not.
+   */
+  const byTitleRecord = new Map(index.map((e) => [e.title.toLowerCase(), e]));
+  let aliasPages = 0;
+  const aliasIndex = [];
+  for (const redirect of redirects) {
+    const to = redirectMap.get(redirect.title.toLowerCase());
+    const target = to ? byTitleRecord.get(String(to).toLowerCase()) : undefined;
+    if (!target) continue;
+    const full = JSON.parse(await readFile(path.join(OUT, `${target.pageid}.json`), 'utf8'));
+    const slug = aliasSlugs.get(redirect.pageid);
+    const record = {
+      ...full,
+      title: redirect.title,
+      slug,
+      pageid: redirect.pageid,
+      alias: { of: target.title, slug: target.slug },
+    };
+    await writeFile(path.join(OUT, `${redirect.pageid}.json`), `${JSON.stringify(record)}\n`, 'utf8');
+    aliasIndex.push({
+      title: record.title, slug, pageid: redirect.pageid, hero: record.hero,
+      categories: record.categories, infoboxType: record.infobox?.type ?? null,
+      alias: record.alias,
+    });
+    aliasPages += 1;
+  }
+  index.push(...aliasIndex);
+  await writeFile(path.join(OUT, 'aliases.json'), `${JSON.stringify(aliasIndex, null, 0)}\n`, 'utf8');
+  console.log(`build-articles: ${aliasPages} alternate name(s) now have their own page rather than redirecting`);
+  if (aliasDisambiguated > 0) console.log(`build-articles: ${aliasDisambiguated} alternate name slug(s) disambiguated against an article that differs only in capitalisation`);
+
+  /* ---- Every referenced file gets a page -------------------------------- */
+  const usedBy = new Map();
+  for (const article of articles) {
+    let parsed;
+    try { parsed = JSON.parse(await readFile(path.join(parsedDir, `${article.pageid}.json`), 'utf8')); } catch { continue; }
+    for (const m of String(parsed.html ?? '').matchAll(FILE_LINK)) {
+      const key = decodeURIComponent(m[1]).replace(/_/g, ' ').toLowerCase();
+      if (!usedBy.has(key)) usedBy.set(key, new Set());
+      usedBy.get(key).add(article.title);
+    }
+  }
+  const fileIndex = [];
+  for (const [key, name] of referencedFiles) {
+    const media = mediaManifest[name] ?? mediaManifest[name.replace(/ /g, '_')] ?? null;
+    const users = [...(usedBy.get(key) ?? [])]
+      .map((t) => byTitleRecord.get(t.toLowerCase()))
+      .filter(Boolean)
+      .map((e) => ({ title: e.title, slug: e.slug }))
+      .sort((a, b) => a.title.localeCompare(b.title));
+    fileIndex.push({
+      name,
+      slug: slugFor(name),
+      media: media && media.file ? { file: media.file, width: media.width, height: media.height } : null,
+      usedBy: users,
+    });
+  }
+  fileIndex.sort((a, b) => a.name.localeCompare(b.name));
+  await writeFile(path.join(OUT, 'files.json'), `${JSON.stringify(fileIndex, null, 0)}\n`, 'utf8');
+  const withImage = fileIndex.filter((f) => f.media).length;
+  console.log(`build-articles: ${fileIndex.length} file page(s), ${withImage} with an archived image, ${fileIndex.length - withImage} recorded as not archived`);
 
   index.sort((a, b) => a.title.localeCompare(b.title));
   await writeFile(path.join(OUT, 'index.json'), `${JSON.stringify(index, null, 0)}\n`, 'utf8');

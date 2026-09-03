@@ -647,3 +647,190 @@ main { padding-block: var(--ok-space-6) var(--ok-space-8); }
 }
 .ok-changelog h3 { font-size: var(--ok-size-h4); }
 .ok-changelog p { margin-block-start: var(--ok-space-2); }
+
+/* ---- Master search, on every page ---------------------------------------- */
+
+/* A plain form, because most of this site is prerendered HTML that never
+   hydrates. It has to work with no JavaScript at all. */
+.ok-mastersearch { display: flex; align-items: center; gap: var(--ok-space-2); min-inline-size: 0; }
+.ok-mastersearch__label {
+  font-size: var(--ok-size-micro);
+  color: var(--ok-ink-faint);
+  white-space: nowrap;
+}
+.ok-mastersearch__field {
+  display: flex;
+  align-items: center;
+  min-inline-size: 0;
+  border: var(--ok-border) solid var(--ok-rule);
+  border-radius: var(--ok-radius);
+  background: var(--ok-paper-raised);
+}
+.ok-mastersearch__field:focus-within { border-color: var(--ok-accent); }
+.ok-mastersearch__input {
+  min-inline-size: 0;
+  inline-size: 14rem;
+  max-inline-size: 100%;
+  padding: var(--ok-space-2) var(--ok-space-3);
+  border: 0;
+  background: none;
+  color: var(--ok-ink);
+  font: inherit;
+  font-size: var(--ok-size-small);
+}
+.ok-mastersearch__input:focus { outline: none; }
+.ok-mastersearch__go {
+  min-inline-size: var(--ok-touch-target);
+  min-block-size: var(--ok-touch-target);
+  border: 0;
+  border-inline-start: var(--ok-border) solid var(--ok-rule);
+  background: none;
+  color: var(--ok-ink-muted);
+  cursor: pointer;
+  border-start-end-radius: var(--ok-radius);
+  border-end-end-radius: var(--ok-radius);
+}
+.ok-mastersearch__go:hover { color: var(--ok-accent); background: var(--ok-paper-sunken); }
+
+/* Below the breakpoint the label would push the field off the bar, and the top
+   bar already carries a title, a nav and a theme control. */
+@media (max-width: 60rem) {
+  .ok-mastersearch__label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .ok-mastersearch__input { inline-size: 8rem; }
+}
+
+/* Available to any control whose visible label is an icon. */
+.ok-visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- Shared result and empty states -------------------------------------- */
+
+.ok-empty {
+  padding: var(--ok-space-5);
+  border: var(--ok-border) dashed var(--ok-rule);
+  border-radius: var(--ok-radius);
+  color: var(--ok-ink-muted);
+  text-align: center;
+}
+.ok-row__body { display: grid; gap: 2px; min-inline-size: 0; }
+.ok-row__summary {
+  font-size: var(--ok-size-micro);
+  color: var(--ok-ink-faint);
+  overflow-wrap: anywhere;
+}
+.ok-results { margin-block-start: var(--ok-space-4); }
+
+.ok-alias-note {
+  margin-block-start: var(--ok-space-3);
+  padding: var(--ok-space-3) var(--ok-space-4);
+  border-inline-start: 3px solid var(--ok-accent);
+  background: var(--ok-paper-raised);
+  border-radius: var(--ok-radius);
+  font-size: var(--ok-size-small);
+  color: var(--ok-ink-muted);
+}
+
+/* ---- File pages ---------------------------------------------------------- */
+
+.ok-filepage__figure { margin-block: var(--ok-space-5); }
+.ok-filepage__art {
+  display: block;
+  max-inline-size: 100%;
+  border: var(--ok-border) solid var(--ok-rule);
+  border-radius: var(--ok-radius);
+  background: var(--ok-paper-raised);
+}
+.ok-filepage__figure figcaption {
+  margin-block-start: var(--ok-space-2);
+  font-size: var(--ok-size-micro);
+  color: var(--ok-ink-faint);
+}
+
+/* ---- Money guide --------------------------------------------------------- */
+
+.ok-callout {
+  margin-block: var(--ok-space-6);
+  padding: var(--ok-space-5);
+  border: var(--ok-border) solid var(--ok-rule-strong);
+  border-radius: var(--ok-radius-lg);
+  background: var(--ok-paper-raised);
+}
+.ok-callout h2 { font-size: var(--ok-size-h3); }
+.ok-callout > p { margin-block: var(--ok-space-2) var(--ok-space-4); color: var(--ok-ink-muted); }
+
+.ok-table { inline-size: 100%; border-collapse: collapse; font-size: var(--ok-size-small); }
+.ok-table th, .ok-table td {
+  padding: var(--ok-space-3);
+  text-align: start;
+  border-block-end: var(--ok-border) solid var(--ok-rule);
+  vertical-align: top;
+}
+.ok-table thead th {
+  position: sticky;
+  inset-block-start: 0;
+  background: var(--ok-paper);
+  font-size: var(--ok-size-micro);
+  text-transform: uppercase;
+  letter-spacing: var(--ok-tracking-wide);
+  color: var(--ok-ink-faint);
+}
+.ok-table tbody tr:hover { background: var(--ok-paper-raised); }
+/* Figures line up when they share a width and sit on the same baseline. */
+.ok-num { font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+
+.ok-tag {
+  display: inline-block;
+  margin-inline-start: var(--ok-space-2);
+  padding: 1px var(--ok-space-2);
+  border: var(--ok-border) solid var(--ok-rule);
+  border-radius: 999px;
+  font-size: var(--ok-size-micro);
+  color: var(--ok-ink-faint);
+}
+
+/* Difficulty is never colour alone: the pips are decoration and the number and
+   its label sit beside them as text. */
+.ok-difficulty { display: inline-flex; align-items: center; gap: var(--ok-space-2); white-space: nowrap; }
+.ok-difficulty__pips { display: inline-flex; gap: 2px; }
+.ok-difficulty__pips span {
+  inline-size: 6px;
+  block-size: 12px;
+  border-radius: 2px;
+  background: var(--ok-rule);
+}
+.ok-difficulty__pips span[data-on] { background: var(--ok-accent); }
+.ok-difficulty[data-tier='1'] .ok-difficulty__pips span[data-on] { background: var(--ok-category-trees); }
+.ok-difficulty[data-tier='4'] .ok-difficulty__pips span[data-on],
+.ok-difficulty[data-tier='5'] .ok-difficulty__pips span[data-on] { background: var(--ok-category-ores); }
+.ok-difficulty__text { font-size: var(--ok-size-micro); color: var(--ok-ink-muted); }
+
+.ok-slider {
+  display: grid;
+  gap: var(--ok-space-2);
+  margin-block: var(--ok-space-4);
+  font-size: var(--ok-size-small);
+  color: var(--ok-ink-muted);
+  max-inline-size: 28rem;
+}
+.ok-slider input { inline-size: 100%; min-block-size: var(--ok-touch-target); }
+
+.ok-method { margin-block-start: var(--ok-space-4); display: grid; gap: var(--ok-space-3); }
+.ok-method dt {
+  font-weight: var(--ok-weight-semibold);
+  font-size: var(--ok-size-micro);
+  text-transform: uppercase;
+  letter-spacing: var(--ok-tracking-wide);
+  color: var(--ok-ink-faint);
+}
+.ok-method dd { margin: 0; color: var(--ok-ink-muted); }
+
+.ok-tierlist { margin-block-start: var(--ok-space-3); display: grid; gap: var(--ok-space-2); }
