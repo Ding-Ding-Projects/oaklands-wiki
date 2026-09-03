@@ -18,6 +18,13 @@
     "description": "Every Oaklands ore, tree, tool and object compared side by side in one sortable table \u2014 a view the source wiki cannot produce, because its facts live inside each article's own template."
   },
   {
+    "id": "logic",
+    "path": "/logic/",
+    "title": "Logic lab \u2014 Oaklands Wiki",
+    "description": "Place the Oaklands logic parts the wiki documents \u2014 AND, OR, NOT, XOR and XAND gates, memory cells, clocks and seven-segment displays \u2014 wire them together, and watch the circuit run.",
+    "hydrate": true
+  },
+  {
     "id": "about",
     "path": "/about/",
     "title": "About \u2014 Oaklands Wiki",

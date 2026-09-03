@@ -90,6 +90,13 @@ async function main() {
         '</body>',
         `<script>window.__PAGE_ROUTE__=${JSON.stringify(route.id)};window.__PAGE_DATA__=${encoded}</script></body>`,
       );
+    } else if (route.hydrate) {
+      // A route that is interactive but carries no build-time data still needs
+      // its marker, or the client entry has nothing to tell it which page it is.
+      html = html.replace(
+        '</body>',
+        `<script>window.__PAGE_ROUTE__=${JSON.stringify(route.id)};window.__PAGE_DATA__=true</script></body>`,
+      );
     }
     if (/<meta name="description"[^>]*>[^]*<meta name="description"/.test(html)) {
       throw new Error(`duplicate description meta on ${route.path}`);

@@ -4,12 +4,13 @@ import { siteConfig, hasMaintainerAbout } from '../lib/site-config';
 import { readProvenance, formatBuiltAt } from '../lib/provenance';
 import { ThemeToggle } from './ThemeToggle';
 
-export function Shell({ current, children }: { current: 'home' | 'about' | 'browse' | 'compare'; children: ReactNode }) {
+export function Shell({ current, children }: { current: 'home' | 'about' | 'browse' | 'compare' | 'logic'; children: ReactNode }) {
   const provenance = readProvenance();
   const nav: { id: typeof current; label: string; to: string }[] = [
     { id: 'home', label: 'Home', to: '/' },
     { id: 'browse', label: 'Browse', to: '/browse/' },
     { id: 'compare', label: 'Compare', to: '/compare/' },
+    { id: 'logic', label: 'Logic lab', to: '/logic/' },
     { id: 'about', label: 'About', to: '/about/' },
   ];
 

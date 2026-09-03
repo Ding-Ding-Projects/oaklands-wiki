@@ -316,6 +316,18 @@
       "docs": [
         "docs/standards/design-language.md"
       ]
+    },
+    {
+      "id": "F-034",
+      "title": "Logic simulator built from the wiki's own documented parts",
+      "state": "built",
+      "implementation": [
+        "src/lib/logic-sim.ts",
+        "src/pages/LogicLab.tsx"
+      ],
+      "tests": [
+        "scripts/test-logic-sim.mjs"
+      ]
     }
   ]
 }
