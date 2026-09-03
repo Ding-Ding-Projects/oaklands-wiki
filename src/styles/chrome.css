@@ -1,0 +1,207 @@
+/* Chrome layer: settings, command palette, notifications, attention modes.
+   Consumes tokens.css; declares no --ok-* tokens. */
+
+/* Visitor font scale, applied by applyState. */
+html { font-size: calc(100% * var(--ok-font-scale, 1)); }
+
+/* ---- Chrome bar --------------------------------------------------------- */
+
+.ok-chrome-bar {
+  position: fixed;
+  inset-block-end: calc(var(--ok-bottomnav-height) + var(--ok-space-3));
+  inset-inline-end: var(--ok-space-4);
+  z-index: 40;
+  display: flex;
+  gap: var(--ok-space-2);
+}
+.ok-chrome-bar .ok-chip {
+  min-height: var(--ok-touch-target);
+  background: var(--ok-paper-raised);
+  box-shadow: var(--ok-shadow);
+}
+@media (min-width: 34.0625rem) {
+  .ok-chrome-bar { inset-block-end: var(--ok-space-4); }
+}
+
+/* ---- Sheets: settings and the notification centre ----------------------- */
+
+.ok-sheet {
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline: 0;
+  z-index: 50;
+  max-height: 86vh;
+  overflow-y: auto;
+  background: var(--ok-paper-raised);
+  border-block-start: var(--ok-border) solid var(--ok-rule-strong);
+  border-start-start-radius: var(--ok-radius-lg);
+  border-start-end-radius: var(--ok-radius-lg);
+  box-shadow: var(--ok-shadow-lifted);
+  padding: var(--ok-space-5) var(--ok-space-4) calc(var(--ok-space-8) + env(safe-area-inset-bottom));
+}
+@media (min-width: 48rem) {
+  .ok-sheet {
+    inset-block: auto;
+    inset-block-start: 50%;
+    inset-inline: 50%;
+    translate: -50% -50%;
+    max-width: 40rem;
+    max-height: 82vh;
+    border: var(--ok-border) solid var(--ok-rule-strong);
+    border-radius: var(--ok-radius-lg);
+    padding: var(--ok-space-5);
+  }
+  .ok-sheet--wide { max-width: 46rem; }
+}
+.ok-sheet__head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--ok-space-4); margin-block-end: var(--ok-space-4);
+}
+.ok-sheet__head h2 { font-size: var(--ok-size-h3); }
+
+.ok-tabs { display: flex; flex-wrap: wrap; gap: var(--ok-space-2); margin-block: var(--ok-space-4); }
+.ok-tabs .ok-chip[aria-selected='true'] {
+  background: var(--ok-accent-soft); border-color: var(--ok-accent); color: var(--ok-accent);
+}
+
+/* ---- Settings fields ---------------------------------------------------- */
+
+.ok-settings { display: grid; gap: var(--ok-space-5); }
+.ok-field { display: grid; gap: var(--ok-space-2); }
+.ok-field__label { font-weight: var(--ok-weight-semibold); }
+.ok-field__hint { margin: 0; font-size: var(--ok-size-small); color: var(--ok-ink-muted); line-height: var(--ok-leading-snug); }
+.ok-secondary-label { color: var(--ok-ink-faint); font-weight: var(--ok-weight-regular); font-size: 0.9em; }
+
+.ok-switch { display: inline-flex; align-items: center; gap: var(--ok-space-2); min-height: var(--ok-touch-target); cursor: pointer; }
+.ok-funny { display: flex; align-items: center; gap: var(--ok-space-3); flex-wrap: wrap; }
+.ok-funny input[type='range'] { flex: 1; min-width: 10rem; }
+.ok-funny output, .ok-field output { font-size: var(--ok-size-small); color: var(--ok-ink-muted); font-variant-numeric: tabular-nums; }
+
+/* ---- Colour picker ------------------------------------------------------ */
+
+.ok-colour { display: grid; gap: var(--ok-space-3); }
+.ok-colour__row { display: flex; align-items: center; gap: var(--ok-space-3); flex-wrap: wrap; }
+.ok-colour__swatch {
+  inline-size: 2.5rem; block-size: 2.5rem; border-radius: var(--ok-radius);
+  border: var(--ok-border) solid var(--ok-rule-strong); flex: none;
+}
+.ok-colour__sliders { display: grid; gap: var(--ok-space-1); }
+.ok-colour__sliders label { display: flex; justify-content: space-between; font-size: var(--ok-size-small); color: var(--ok-ink-muted); }
+.ok-colour__translate dl { display: grid; grid-template-columns: auto 1fr; gap: var(--ok-space-2) var(--ok-space-4); margin-block-start: var(--ok-space-2); }
+.ok-colour__contrast { margin: 0; font-size: var(--ok-size-small); color: var(--ok-ink-muted); }
+
+/* ---- Command palette ---------------------------------------------------- */
+
+.ok-palette-backdrop {
+  position: fixed; inset: 0; z-index: 60;
+  background: color-mix(in srgb, #000 55%, transparent);
+  backdrop-filter: blur(3px);
+  display: grid; place-items: start center;
+  padding: var(--ok-space-5) var(--ok-space-4);
+}
+.ok-palette {
+  inline-size: min(42rem, 100%);
+  max-height: 76vh;
+  display: flex; flex-direction: column;
+  background: var(--ok-paper-raised);
+  border: var(--ok-border) solid var(--ok-rule-strong);
+  border-radius: var(--ok-radius-lg);
+  box-shadow: var(--ok-shadow-lifted);
+  overflow: hidden;
+}
+.ok-palette--full { inline-size: 100%; max-height: 92vh; }
+.ok-palette__head { display: flex; gap: var(--ok-space-2); padding: var(--ok-space-3); border-block-end: var(--ok-border) solid var(--ok-rule); }
+.ok-palette__head input { flex: 1; min-width: 0; }
+.ok-palette__list { list-style: none; margin: 0; padding: var(--ok-space-2); overflow-y: auto; }
+.ok-palette__row {
+  display: flex; align-items: center; gap: var(--ok-space-3);
+  padding: var(--ok-space-2) var(--ok-space-3);
+  min-height: var(--ok-touch-target);
+  border-radius: var(--ok-radius);
+  cursor: pointer;
+}
+.ok-palette__row.is-active { background: var(--ok-paper-hover); }
+.ok-palette__group {
+  font-size: var(--ok-size-micro); text-transform: uppercase; letter-spacing: var(--ok-tracking-wide);
+  color: var(--ok-ink-faint); min-inline-size: 5rem;
+}
+.ok-palette__label { flex: 1; font-size: var(--ok-size-small); }
+.ok-palette__control { display: flex; align-items: center; }
+.ok-palette__foot {
+  margin: 0; padding: var(--ok-space-3);
+  border-block-start: var(--ok-border) solid var(--ok-rule);
+  font-size: var(--ok-size-micro); color: var(--ok-ink-faint);
+}
+
+/* ---- Notifications ------------------------------------------------------ */
+
+.ok-toasts {
+  position: fixed;
+  inset-block-end: calc(var(--ok-bottomnav-height) + var(--ok-space-7));
+  inset-inline-end: var(--ok-space-4);
+  z-index: 45;
+  display: grid; gap: var(--ok-space-2);
+  inline-size: min(24rem, calc(100vw - 2rem));
+}
+@media (min-width: 34.0625rem) { .ok-toasts { inset-block-end: calc(var(--ok-space-8) + var(--ok-space-3)); } }
+.ok-toast {
+  display: flex; align-items: flex-start; gap: var(--ok-space-2);
+  padding: var(--ok-space-3);
+  border: var(--ok-border) solid var(--ok-rule-strong);
+  border-radius: var(--ok-radius);
+  background: var(--ok-paper-raised);
+  box-shadow: var(--ok-shadow);
+  font-size: var(--ok-size-small);
+}
+.ok-toast[data-kind='success'] { border-inline-start: 3px solid var(--ok-positive); }
+.ok-toast[data-kind='warning'] { border-inline-start: 3px solid var(--ok-caution); }
+.ok-toast[data-kind='error'] { border-inline-start: 3px solid var(--ok-negative); }
+.ok-toast[data-kind='info'] { border-inline-start: 3px solid var(--ok-accent); }
+.ok-toast__text { display: grid; gap: 2px; flex: 1; }
+.ok-toast__dismiss { background: none; border: 0; min-height: var(--ok-touch-target); color: var(--ok-ink-faint); cursor: pointer; }
+
+/* ---- Attention modes ---------------------------------------------------- */
+
+/* Focus: bring the current section forward, push the rest back. Nothing is
+   hidden that one action cannot bring back — an interface that disappears work
+   is a worse problem than a busy one. */
+[data-attention-focus] .ok-tile:not(:hover):not(:focus-within),
+[data-attention-focus] .ok-row:not(:hover):not(:focus-within) { opacity: 0.55; }
+[data-attention-focus] .ok-tile, [data-attention-focus] .ok-row { transition: opacity var(--ok-motion) var(--ok-ease); }
+
+/* Low stimulation: quieter colour and no non-essential motion. Composes with
+   the platform preference rather than overriding it. */
+[data-attention-lowstimulation] body::before { display: none; }
+[data-attention-lowstimulation] * { animation: none !important; }
+[data-attention-lowstimulation] .ok-tile:hover { transform: none; }
+
+[data-reduce-motion] *, [data-reduce-motion] *::before, [data-reduce-motion] *::after {
+  animation-duration: 0.001ms !important;
+  transition-duration: 0.001ms !important;
+}
+[data-reduce-motion] html { scroll-behavior: auto; }
+
+/* Time awareness and momentum render their own surfaces; see AttentionBar. */
+.ok-attention-bar {
+  position: fixed;
+  inset-block-start: calc(var(--ok-topbar-height) + var(--ok-space-2));
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  z-index: 35;
+  display: flex; align-items: center; gap: var(--ok-space-3);
+  padding: var(--ok-space-2) var(--ok-space-4);
+  border: var(--ok-border) solid var(--ok-rule);
+  border-radius: var(--ok-radius-pill);
+  background: color-mix(in srgb, var(--ok-paper-raised) 92%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--ok-shadow);
+  font-size: var(--ok-size-small);
+  max-inline-size: calc(100vw - 2rem);
+}
+.ok-attention-bar b { font-variant-numeric: tabular-nums lining-nums; }
+
+/* School mode: the Cantonese, funny-level and dim-sum capabilities behave as
+   though they are not installed — omitted, not merely disabled. */
+[data-school-mode] [data-capability='cantonese'],
+[data-school-mode] [data-capability='funny'],
+[data-school-mode] [data-capability='dim-sum'] { display: none !important; }

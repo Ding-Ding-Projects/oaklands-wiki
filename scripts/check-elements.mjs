@@ -24,6 +24,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const STYLE_FILES = [
   'src/styles/base.css',
   'src/styles/elements.css',
+  'src/styles/chrome.css',
 ];
 
 /** Every element the site can emit. Grouped only for readability. */

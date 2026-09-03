@@ -164,12 +164,21 @@
     {
       "id": "F-016",
       "title": "English, Cantonese and bilingual language modes",
-      "state": "open"
+      "state": "built",
+      "implementation": [
+        "src/lib/i18n.ts",
+        "src/lib/visitor-state.ts",
+        "src/chrome/SettingsPanel.tsx"
+      ]
     },
     {
       "id": "F-017",
       "title": "Both per-language funny-level sliders and the dialog emoji switch",
-      "state": "open"
+      "state": "built",
+      "implementation": [
+        "src/lib/i18n.ts",
+        "src/chrome/SettingsPanel.tsx"
+      ]
     },
     {
       "id": "F-018",
@@ -178,13 +187,20 @@
     },
     {
       "id": "F-019",
-      "title": "Command palette on Ctrl+Shift+F with exact-element teleport",
-      "state": "open"
+      "title": "Command palette on Ctrl+Shift+F with rich inline setting controls",
+      "state": "built",
+      "implementation": [
+        "src/chrome/CommandPalette.tsx",
+        "src/chrome/Chrome.tsx"
+      ]
     },
     {
       "id": "F-020",
       "title": "Non-blocking notifications and a reviewable centre",
-      "state": "open"
+      "state": "built",
+      "implementation": [
+        "src/chrome/NotificationCentre.tsx"
+      ]
     },
     {
       "id": "F-021",
@@ -193,13 +209,22 @@
     },
     {
       "id": "F-022",
-      "title": "Renamed School mode and its shared unlock credential",
-      "state": "open"
+      "title": "Renamed School mode with an honest recovery route",
+      "state": "built",
+      "implementation": [
+        "src/lib/visitor-state.ts",
+        "src/lib/i18n.ts",
+        "src/chrome/SettingsPanel.tsx"
+      ]
     },
     {
       "id": "F-023",
-      "title": "Narrator with per-language voice, rate and pitch selection",
-      "state": "open"
+      "title": "Narrator with per-language voice pickers, rate, pitch and a serialized queue",
+      "state": "built",
+      "implementation": [
+        "src/lib/narrator.ts",
+        "src/chrome/SettingsPanel.tsx"
+      ]
     },
     {
       "id": "F-024",
@@ -208,8 +233,13 @@
     },
     {
       "id": "F-025",
-      "title": "Attention modes",
-      "state": "open"
+      "title": "Five independently switchable attention modes",
+      "state": "built",
+      "implementation": [
+        "src/chrome/AttentionBar.tsx",
+        "src/styles/chrome.css",
+        "src/lib/visitor-state.ts"
+      ]
     },
     {
       "id": "F-026",

@@ -100,9 +100,12 @@ async function main() {
   }
 
   // ---- Article routes -------------------------------------------------
-  // Every captured article gets its own prerendered page. These carry no
-  // hydration script: the body is static text, so shipping ~200 KB of
-  // JavaScript to re-render markup that is already correct would be pure cost.
+  // Every captured article gets its own prerendered page. The article BODY is
+  // never hydrated — it is static text that React does not own — but the page
+  // does load the bundle, because the settings panel, command palette and
+  // notifications must work on every surface rather than on the few that happen
+  // to be interactive. The bundle mounts into its own empty container and leaves
+  // the prerendered body untouched.
   let articleIndex = [];
   try {
     articleIndex = JSON.parse(await readFile(path.join(ROOT, 'data', 'articles', 'index.json'), 'utf8'));
@@ -110,7 +113,6 @@ async function main() {
     console.log('prerender: no data/articles/index.json — skipping article routes');
   }
 
-  const scriptTag = /<script type="module"[^>]*><\/script>/;
   for (const entry of articleIndex) {
     const record = JSON.parse(
       await readFile(path.join(ROOT, 'data', 'articles', `${entry.pageid}.json`), 'utf8'),
@@ -126,8 +128,7 @@ async function main() {
 
     const html = template
       .replace('<!--app-html-->', render('article', record))
-      .replace(/<title>.*?<\/title>/s, headFor({ title: `${record.title} — Oaklands Wiki`, description, canonical }))
-      .replace(scriptTag, '');
+      .replace(/<title>.*?<\/title>/s, headFor({ title: `${record.title} — Oaklands Wiki`, description, canonical }));
 
     const outDir = path.join(DIST, 'wiki', record.slug);
     await mkdir(outDir, { recursive: true });
