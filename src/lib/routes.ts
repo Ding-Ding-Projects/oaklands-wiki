@@ -1,6 +1,6 @@
 import routeData from '../../data/routes.json';
 
-export type RouteId = 'home' | 'about' | 'browse';
+export type RouteId = 'home' | 'about' | 'browse' | 'compare';
 export type Route = { id: RouteId; path: string; title: string; description: string };
 
 /** Every prerendered route. `scripts/prerender.mjs` reads this same JSON. */
@@ -18,5 +18,6 @@ export function routeIdForPath(pathname: string): RouteId {
   const normalised = (stripped.replace(/\/+$/, '') || '/');
   if (normalised === '/about') return 'about';
   if (normalised === '/browse') return 'browse';
+  if (normalised === '/compare') return 'compare';
   return 'home';
 }

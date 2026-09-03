@@ -64,10 +64,13 @@ async function main() {
   // Payloads for the routes that need data. A route listed in routes.json but
   // missing its payload file renders its honest fallback rather than a blank.
   const payloadFor = async (id) => {
-    const file = { home: 'home.json', browse: 'browse.json' }[id];
+    const file = { home: 'home.json', browse: 'browse.json', compare: 'comparisons.json' }[id];
     if (!file) return undefined;
     try {
-      return JSON.parse(await readFile(path.join(ROOT, 'data', 'articles', file), 'utf8'));
+      const raw = JSON.parse(await readFile(path.join(ROOT, 'data', 'articles', file), 'utf8'));
+      if (id !== 'compare') return raw;
+      if (!Array.isArray(raw) || raw.length === 0) return undefined;
+      return { tables: raw, active: raw[0].type };
     } catch {
       console.log(`prerender: no ${file} — ${id} will render without data`);
       return undefined;

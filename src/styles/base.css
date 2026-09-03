@@ -487,3 +487,20 @@ main { padding-block: var(--ok-space-6) var(--ok-space-8); }
   color: var(--ok-ink-faint);
   background: var(--ok-paper-sunken);
 }
+
+/* ---- Comparison tables --------------------------------------------------- */
+
+.ok-sortbutton {
+  background: none;
+  border: 0;
+  padding: 0;
+  min-height: auto;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ok-sortbutton:hover { color: var(--ok-accent); }
+.ok-compare__name { display: inline-flex; align-items: center; gap: var(--ok-space-2); text-decoration: none; color: var(--ok-ink); font-weight: var(--ok-weight-medium); }
+.ok-compare__name:hover { color: var(--ok-accent); }
+.ok-compare__name .ok-row__thumb { inline-size: 1.75rem; block-size: 1.75rem; }

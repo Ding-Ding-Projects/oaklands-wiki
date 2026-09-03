@@ -506,6 +506,65 @@ async function main() {
     types: [...new Set(index.map((e) => e.infoboxType).filter(Boolean))].sort(),
   };
   await writeFile(path.join(OUT, 'browse.json'), `${JSON.stringify(browse, null, 0)}\n`, 'utf8');
+
+  /*
+   * Comparison tables, one per infobox type.
+   *
+   * This is the thing the source wiki cannot do: its facts live inside a
+   * per-article template, so nobody can see every ore's price side by side. The
+   * typed extraction makes it a grouping problem instead.
+   *
+   * Columns are the fields that at least a quarter of that type's articles
+   * actually carry. A column present on three of ninety rows is not a column,
+   * it is eighty-seven empty cells.
+   */
+  const records = new Map();
+  for (const entry of index) {
+    if (!entry.infoboxType) continue;
+    const record = JSON.parse(await readFile(path.join(OUT, `${entry.pageid}.json`), 'utf8'));
+    if (!record.infobox) continue;
+    if (!records.has(entry.infoboxType)) records.set(entry.infoboxType, []);
+    records.get(entry.infoboxType).push({
+      title: record.title, slug: record.slug, hero: record.hero,
+      fields: Object.fromEntries(record.infobox.fields.map((f) => [f.label, f.value])),
+    });
+  }
+
+  const comparisons = [...records.entries()]
+    .filter(([, rows]) => rows.length >= 4)
+    .map(([type, rows]) => {
+      const counts = new Map();
+      for (const row of rows) {
+        for (const label of Object.keys(row.fields)) counts.set(label, (counts.get(label) ?? 0) + 1);
+      }
+      // Some infoboxes carry a `title` parameter that just repeats the article
+      // name, and a couple carry pure presentation. Neither is a fact to compare.
+      const NOT_A_COLUMN = new Set(['title', 'Title', 'name', 'Name', 'caption', 'Caption']);
+      const threshold = Math.max(2, Math.ceil(rows.length * 0.25));
+      const columns = [...counts.entries()]
+        .filter(([label]) => !NOT_A_COLUMN.has(label))
+        .filter(([, n]) => n >= threshold)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 8)
+        .map(([label]) => label);
+      return {
+        type,
+        slug: slugFor(type),
+        count: rows.length,
+        columns,
+        rows: rows
+          .map((row) => ({
+            title: row.title, slug: row.slug, hero: row.hero,
+            values: columns.map((label) => row.fields[label] ?? null),
+          }))
+          .sort((a, b) => a.title.localeCompare(b.title)),
+      };
+    })
+    .filter((table) => table.columns.length > 0)
+    .sort((a, b) => b.count - a.count);
+
+  await writeFile(path.join(OUT, 'comparisons.json'), `${JSON.stringify(comparisons, null, 0)}\n`, 'utf8');
+  console.log(`build-articles: ${comparisons.length} comparison table(s), largest ${comparisons[0]?.type} with ${comparisons[0]?.count} rows`);
   const uncategorised = index.filter((entry) => (entry.categories ?? []).length === 0).length;
   console.log(`build-articles: ${categories.length} categories, ${uncategorised} article(s) carry none`);
 

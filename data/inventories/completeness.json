@@ -149,7 +149,11 @@
     {
       "id": "F-013",
       "title": "Comparison tables built from typed infobox records",
-      "state": "open"
+      "state": "built",
+      "implementation": [
+        "src/pages/Compare.tsx",
+        "scripts/build-articles.mjs"
+      ]
     },
     {
       "id": "F-014",
