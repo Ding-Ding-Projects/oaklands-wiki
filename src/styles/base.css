@@ -133,7 +133,13 @@ a:hover { color: var(--ok-accent-hover); text-decoration-color: currentColor; }
 }
 .ok-topbar__nav a:hover { background: var(--ok-paper-hover); color: var(--ok-ink); }
 .ok-topbar__nav a[aria-current='page'] { background: var(--ok-accent-soft); color: var(--ok-accent); }
-@media (max-width: 34rem) { .ok-topbar__nav { display: none; } }
+/* Below the breakpoint the nav moves to the bottom bar. The `auto` margin that
+   pushed things apart lived on the nav, so hiding it left the theme control
+   jammed against the wordmark — the margin has to move with the layout. */
+@media (max-width: 34rem) {
+  .ok-topbar__nav { display: none; }
+  .ok-topbar__inner > .ok-chip { margin-inline-start: auto; }
+}
 
 main { padding-block: var(--ok-space-6) var(--ok-space-8); }
 
@@ -174,7 +180,7 @@ main { padding-block: var(--ok-space-6) var(--ok-space-8); }
 
 /* ---- Hero --------------------------------------------------------------- */
 
-.ok-hero { padding-block: var(--ok-space-6) var(--ok-space-7); }
+.ok-hero { padding-block: var(--ok-space-5) var(--ok-space-4); }
 .ok-hero h1 { margin-block: var(--ok-space-3); }
 .ok-hero__lede { max-width: 46ch; color: var(--ok-ink-muted); font-size: 1.125rem; }
 .ok-hero__stats {
