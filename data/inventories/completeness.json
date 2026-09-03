@@ -191,8 +191,13 @@
     },
     {
       "id": "F-018",
-      "title": "Appearance system, per-element editors, infinite colour picker",
-      "state": "open"
+      "title": "Appearance system, per-element editors, continuous colour picker",
+      "state": "built",
+      "implementation": [
+        "src/chrome/SettingsPanel.tsx",
+        "src/chrome/ColourPicker.tsx",
+        "src/chrome/ElementMenu.tsx"
+      ]
     },
     {
       "id": "F-019",
@@ -213,8 +218,17 @@
     },
     {
       "id": "F-021",
-      "title": "Per-element toy locks, unlock ladder, Support Tickets",
-      "state": "open"
+      "title": "Per-element toy locks, the unlock ladder, and Support Tickets",
+      "state": "built",
+      "implementation": [
+        "src/lib/locks.ts",
+        "src/chrome/LockSurfaces.tsx",
+        "src/chrome/UnlockLadder.tsx",
+        "src/chrome/ElementMenu.tsx"
+      ],
+      "tests": [
+        "scripts/test-locks.mjs"
+      ]
     },
     {
       "id": "F-022",

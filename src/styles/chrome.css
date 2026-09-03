@@ -300,3 +300,48 @@ html { font-size: calc(100% * var(--ok-font-scale, 1)); }
 }
 .ok-tabmenu__item:hover { background: var(--ok-paper-hover); }
 .ok-tabmenu__empty { margin: 0; padding: var(--ok-space-2); color: var(--ok-ink-faint); font-size: var(--ok-size-small); }
+
+/* ---- Element menu, locks and the ladder --------------------------------- */
+
+.ok-elementmenu {
+  position: fixed; z-index: 70;
+  min-inline-size: 15rem; max-inline-size: 18rem;
+  padding: var(--ok-space-2);
+  background: var(--ok-paper-raised);
+  border: var(--ok-border) solid var(--ok-rule-strong);
+  border-radius: var(--ok-radius);
+  box-shadow: var(--ok-shadow-lifted);
+}
+.ok-elementmenu__target {
+  margin: 0 0 var(--ok-space-2);
+  padding-inline: var(--ok-space-3);
+  font-size: var(--ok-size-micro);
+  color: var(--ok-ink-faint);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* Access-control-style keypad, with large targets and manual entry beside it.
+   Both feed the same validator and the same attempt budget. */
+.ok-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--ok-space-2);
+  margin-block-start: var(--ok-space-3);
+  max-inline-size: 16rem;
+}
+.ok-keypad button { min-height: 3.25rem; font-size: var(--ok-size-h4); }
+
+.ok-ladder { display: grid; gap: var(--ok-space-3); justify-items: start; }
+.ok-ladder__prompt { font-size: var(--ok-size-h3); margin: 0; }
+.ok-ladder__options { display: flex; flex-wrap: wrap; gap: var(--ok-space-2); }
+.ok-ladder__options button { min-height: var(--ok-touch-target); }
+
+.ok-moles { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--ok-space-2); max-inline-size: 18rem; }
+.ok-moles button {
+  aspect-ratio: 1; font-size: 1.75rem;
+  background: var(--ok-paper-sunken);
+  border-radius: var(--ok-radius);
+}
+.ok-moles button[data-mole] { background: var(--ok-accent-soft); border-color: var(--ok-accent); }
+
+blockquote { margin-block: var(--ok-space-3); }

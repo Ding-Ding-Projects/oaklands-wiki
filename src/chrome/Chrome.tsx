@@ -9,6 +9,8 @@ import { CommandPalette } from './CommandPalette';
 import { NotificationCentre, type Notice } from './NotificationCentre';
 import { AttentionBar } from './AttentionBar';
 import { TabStrip } from './TabStrip';
+import { ElementMenu, applyElementAppearance } from './ElementMenu';
+import { SupportTickets } from './LockSurfaces';
 import { Narrator } from '../lib/narrator';
 
 /**
@@ -27,6 +29,7 @@ export function Chrome() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [notices, setNotices] = useState<Notice[]>([]);
   const [storageBlocked, setStorageBlocked] = useState(false);
+  const [ticketsOpen, setTicketsOpen] = useState(false);
   const stateRef = useRef(state);
   stateRef.current = state;
   const narrator = useMemo(() => new Narrator(() => stateRef.current), []);
@@ -44,6 +47,7 @@ export function Chrome() {
     const loaded = loadState();
     setState(loaded);
     setReady(true);
+    applyElementAppearance();
   }, []);
 
   useEffect(() => {
@@ -90,6 +94,7 @@ export function Chrome() {
   return (
     <>
       <TabStrip />
+      <ElementMenu state={state} onClearAll={() => setTicketsOpen(true)} />
       <AttentionBar state={state} />
 
       <div className="ok-chrome-bar">
@@ -124,6 +129,18 @@ export function Chrome() {
           storageBlocked={storageBlocked}
           notify={notify}
           t={t}
+        />
+      ) : null}
+
+      {ticketsOpen ? (
+        <SupportTickets
+          onClose={() => setTicketsOpen(false)}
+          onClearAll={() => {
+            // The visitor's own act, in their own browser. Nothing is deleted
+            // anywhere else, because nothing exists anywhere else.
+            try { window.localStorage.clear(); window.sessionStorage.clear(); } catch { /* nothing to undo */ }
+            window.location.reload();
+          }}
         />
       ) : null}
 
