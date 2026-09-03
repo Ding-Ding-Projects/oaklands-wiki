@@ -287,7 +287,17 @@ main { padding-block: var(--ok-space-6) var(--ok-space-8); }
   display: grid; place-items: center; overflow: hidden;
 }
 .ok-row__thumb img { inline-size: 100%; block-size: 100%; object-fit: contain; padding: 2px; }
-.ok-row__name { font-weight: var(--ok-weight-medium); font-size: var(--ok-size-small); }
+/* A flex item's default min-width is `auto`, which refuses to shrink below its
+   content. That is what left the browse list 6px wider than a 320px screen: the
+   name would not give way to the thumbnail and the meta beside it. */
+.ok-row__name {
+  font-weight: var(--ok-weight-medium);
+  font-size: var(--ok-size-small);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+.ok-row { min-inline-size: 0; }
+.ok-row__meta { flex: none; }
 .ok-row__meta { margin-inline-start: auto; font-size: var(--ok-size-micro); color: var(--ok-ink-faint); }
 
 .ok-chip {

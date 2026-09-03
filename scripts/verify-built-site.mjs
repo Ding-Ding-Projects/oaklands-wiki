@@ -20,6 +20,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = process.env.CDP_PORT ?? '9797';
 const ORIGIN = process.env.SITE_ORIGIN ?? 'https://ding-ding-projects.github.io/oaklands-wiki';
 const OUT = path.join(ROOT, 'evidence', 'verification');
+const RUN_ID = Date.now().toString(36);
 
 /** The tuple every capture is taken under, recorded beside every result. */
 const VIEWPORTS = [
@@ -188,7 +189,11 @@ async function main() {
         width: viewport.width, height: viewport.height,
         deviceScaleFactor: viewport.scale, mobile: viewport.mobile,
       });
-      await send('Page.navigate', { url: `${ORIGIN}${surface.path}` });
+      // Cache-bust per run. `Network.setCacheDisabled` covers the browser's own
+      // cache but not an edge that serves stale HTML, and stale HTML points at
+      // the previous CSS hash — so the audit measures a build that is no longer
+      // deployed and reports defects that were fixed an hour ago.
+      await send('Page.navigate', { url: `${ORIGIN}${surface.path}?v=${RUN_ID}` });
       await new Promise((r) => setTimeout(r, 2200));
       const audit = await send('Runtime.evaluate', { returnByValue: true, expression: AUDIT });
       results.push({ surface: surface.id, viewport: viewport.name, tuple: viewport, ...audit.result.value });
