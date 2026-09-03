@@ -92,6 +92,36 @@ no installed application, and that exemption is recorded in
 
 </details>
 
+## What it looks like
+
+Real captures from the live site, taken through an isolated headless browser at a
+390x844 phone viewport — not mockups, and not a narrowed desktop window.
+
+<details open>
+<summary><strong>Home and About, on a phone</strong></summary>
+
+| Home | About |
+|---|---|
+| ![Home page at 390x844, showing the category grid with material-tone accents](evidence/phase-1/home-phone-390.png) | ![About page at 390x844, showing provenance, licensing and non-affiliation](evidence/phase-1/about-phone-390.png) |
+
+Measured on the live site at that viewport, rather than asserted:
+
+| Property | Measured |
+|---|---|
+| Body text | 18px at 30.6px line height (1.7) |
+| Horizontal body overflow | none — `scrollWidth` equals `clientWidth` at 390px |
+| Category cards | 11, minimum height 56px |
+| Bottom navigation targets | 55px tall, pinned, covering no content |
+
+</details>
+
+> [!NOTE]
+> The full-page capture shows the bottom navigation bar apparently floating
+> mid-page. It is not a defect and was checked rather than assumed: with
+> `captureBeyondViewport`, a `position: sticky` element is rendered at its stuck
+> viewport position, which lands mid-image in a tall capture. Measured in the real
+> viewport the bar sits flush at the bottom and covers nothing.
+
 ## Verification
 
 Guards assert properties of the **built output**, never of the configuration that produced

@@ -16,11 +16,13 @@ unticked with its state named beside it.
 - [x] Built-output guard: base path, remote assets, injected CSS, Open Graph, token scope
 - [x] Every guard assertion proved red-then-green
 - [x] Pages workflow
-- [ ] Site confirmed live by fetching the deployed URL and reading it back
+- [x] Site confirmed live by fetching the deployed URL and reading it back
 - [ ] `build.bat` and `download-dependencies.bat`
 - [ ] Vendored fonts with pinned versions and a SHA-256 manifest
-- [ ] Corpus importer with robots preflight, and the full 1,066-article capture
+- [x] Corpus importer with a fail-closed robots preflight (live verdict: allow)
+- [x] Full corpus captured — 1,063 articles, 90 redirects, 98 categories, 357 editors
 - [ ] Line-count script with authorship attribution
+- [x] Phone rendering measured on the live site at 390x844: no horizontal overflow, 18px/1.7 body, 56px category cards, 55px nav targets
 - [ ] Release workflow
 
 ## Phase 2 — Articles
