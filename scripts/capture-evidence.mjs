@@ -43,6 +43,10 @@ const SCREENS = [
   { id: 'article', path: '/wiki/Copper/', tuple: PHONE, state: 'default', theme: 'dark' },
   { id: 'category', path: '/category/Ores/', tuple: PHONE, state: 'unfiltered', theme: 'dark' },
   { id: 'about', path: '/about/', tuple: PHONE, state: 'default', theme: 'dark' },
+  { id: 'money', path: '/money/', tuple: DESKTOP, state: 'per stud, most money first', theme: 'dark' },
+  { id: 'money-phone', path: '/money/', tuple: PHONE, state: 'per stud, most money first', theme: 'dark' },
+  { id: 'search', path: '/search/?q=copper', tuple: PHONE, state: 'query copper', theme: 'dark' },
+  { id: 'file', path: '/file/Altar1.png/', tuple: PHONE, state: 'archived image', theme: 'dark' },
 ];
 
 async function connect() {

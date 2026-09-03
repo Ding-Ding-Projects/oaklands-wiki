@@ -85,6 +85,26 @@ export function TabStrip() {
     items[Math.max(0, Math.min(items.length - 1, next))]?.focus();
   };
 
+  /**
+   * Tell the page a side strip is there, so the content can move out from under
+   * it.
+   *
+   * The strip is `position: fixed`, which takes it out of flow entirely, so
+   * nothing below it knows it exists. That left it sitting on top of the first
+   * 240px of every page at desktop widths — permanently, for every visitor, with
+   * no overflow and no error to show for it. A fixed overlay is invisible to a
+   * layout check; only measuring the two boxes against each other finds it.
+   */
+  useEffect(() => {
+    const visible = ready && state.tabs.length > 0;
+    if (visible && (state.dock === 'left' || state.dock === 'right')) {
+      document.body.dataset.tabstrip = state.dock;
+    } else {
+      delete document.body.dataset.tabstrip;
+    }
+    return () => { delete document.body.dataset.tabstrip; };
+  }, [ready, state.tabs.length, state.dock]);
+
   if (!ready || state.tabs.length === 0) return null;
 
   const menuTab = menu ? state.tabs.find((t) => t.id === menu.tabId) ?? null : null;

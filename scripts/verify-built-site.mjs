@@ -122,6 +122,33 @@ const AUDIT = `(() => {
     }
   }
 
+  // 2c. Nothing fixed is sitting on top of the content.
+  //
+  // A fixed overlay is out of flow, so it causes no overflow and breaks no
+  // layout assertion — every check above passes while it covers the page. The
+  // tab strip did exactly that at every desktop width, permanently, for every
+  // visitor. The only way to see it is to measure the two boxes against each
+  // other, so that is what this does: take the point just inside the main
+  // content and ask the document what is actually on top there.
+  const occluders = [];
+  const main = document.querySelector("main");
+  if (main) {
+    const m = main.getBoundingClientRect();
+    const probes = [
+      [m.left + 8, m.top + 8], [m.right - 8, m.top + 8],
+      [m.left + 8, Math.min(m.bottom, innerHeight) - 8],
+    ];
+    for (const [x, y] of probes) {
+      if (x < 0 || y < 0 || x > innerWidth || y > innerHeight) continue;
+      const top = document.elementFromPoint(x, y);
+      if (!top || main.contains(top) || top.contains(main)) continue;
+      const style = getComputedStyle(top);
+      if (style.position !== "fixed" && style.position !== "sticky") continue;
+      occluders.push(top.tagName.toLowerCase() + (top.className ? "." + String(top.className).split(" ")[0] : "")
+        + " covers main at " + px(x) + "," + px(y));
+    }
+  }
+
   // 3. Every control has an accessible name.
   const unnamed = [];
   for (const el of document.querySelectorAll('a, button, input, select, textarea')) {
@@ -165,6 +192,8 @@ const AUDIT = `(() => {
     smallTargetCount: small.length,
     overflowingElements: scrollers.slice(0, 6),
     overflowingCount: scrollers.length,
+    occluders: [...new Set(occluders)],
+    occluderCount: new Set(occluders).size,
     unnamedControls: unnamed.slice(0, 8),
     unnamedControlCount: unnamed.length,
     imagesWithoutAlt: noAlt,
@@ -215,6 +244,7 @@ async function main() {
   const badH1 = results.filter((r) => r.h1Count !== 1);
   const tiny = results.filter((r) => r.smallTargetCount > 0);
   const scrolling = results.filter((r) => r.overflowingCount > 0);
+  const covered = results.filter((r) => r.occluderCount > 0);
 
   console.log(`\nchecked ${results.length} surface/viewport combinations`);
   console.log(`  horizontal overflow : ${overflowing.length}`);
@@ -223,19 +253,21 @@ async function main() {
   console.log(`  h1 count not 1      : ${badH1.length}`);
   console.log(`  targets under 24px  : ${tiny.length}`);
   console.log(`  elements overflowing: ${scrolling.length}`);
+  console.log(`  content covered     : ${covered.length}`);
 
-  for (const row of [...overflowing, ...unnamed, ...badH1, ...tiny, ...scrolling].slice(0, 12)) {
+  for (const row of [...overflowing, ...unnamed, ...badH1, ...tiny, ...scrolling, ...covered].slice(0, 12)) {
     console.log(`   - ${row.surface} @ ${row.viewport}: ` +
       [row.horizontalOverflow && 'overflow',
        row.unnamedControlCount && `${row.unnamedControlCount} unnamed (${row.unnamedControls.join(', ')})`,
        row.h1Count !== 1 && `${row.h1Count} h1`,
        row.smallTargetCount && `${row.smallTargetCount} small (${row.smallTargets.slice(0, 3).join(', ')})`,
        row.overflowingCount && `${row.overflowingCount} overflowing (${row.overflowingElements.slice(0, 3).join(', ')})`,
+       row.occluderCount && `covered by ${row.occluders.join('; ')}`,
       ].filter(Boolean).join('; '));
   }
 
   ws.close();
-  const failed = overflowing.length + unnamed.length + noAlt.length + badH1.length;
+  const failed = overflowing.length + unnamed.length + noAlt.length + badH1.length + covered.length;
   if (failed > 0) process.exitCode = 1;
 }
 

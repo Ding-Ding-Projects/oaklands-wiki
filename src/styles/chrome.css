@@ -376,3 +376,17 @@ blockquote { margin-block: var(--ok-space-3); }
   border-radius: var(--ok-radius);
   background: var(--ok-paper-sunken);
 }
+
+/* The side strip is fixed, so nothing below it knows it is there. Without this
+   it sits on top of the first 15rem of every page at desktop widths — for every
+   visitor, permanently, with no overflow and no error to show for it. Only
+   measuring the strip's box against the content's finds a fixed overlay; a
+   layout check that looks for overflow never will.
+
+   Below the breakpoint the strip hides itself, so the offset must go with it. */
+@media (min-width: 60rem) {
+  body[data-tabstrip='left'] main,
+  body[data-tabstrip='left'] .ok-footer { padding-inline-start: var(--ok-tabstrip-width); }
+  body[data-tabstrip='right'] main,
+  body[data-tabstrip='right'] .ok-footer { padding-inline-end: var(--ok-tabstrip-width); }
+}

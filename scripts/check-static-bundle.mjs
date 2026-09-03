@@ -59,9 +59,31 @@ async function assertDistIsFresh() {
   }
 }
 
+/**
+ * The search index must stay OUT of the JavaScript bundle.
+ *
+ * It is fetched at runtime, and only on the search page, so the other 2,052
+ * pages never pay for half a megabyte they will not use. One default JSON import
+ * instead of a named one silently inlines the whole thing — the build stays
+ * green, every page still works, and every visit just got 549KB heavier with
+ * nothing to show for it.
+ */
+async function assertIndexNotBundled(files) {
+  const scripts = files.filter((f) => f.endsWith('.js'));
+  if (scripts.length === 0) return fail('dist contains no JavaScript — the bundle check cannot run');
+  for (const file of scripts) {
+    const source = await readFile(file, 'utf8');
+    // A search entry is an object with these exact keys; the count alone is fine.
+    if (/"u":"\/wiki\//.test(source) || /"k":"article"/.test(source)) {
+      fail(`${path.relative(ROOT, file)}: the search index is inlined into the bundle — import the count by name, not the file by default`);
+    }
+  }
+}
+
 async function main() {
   await assertDistIsFresh();
   const files = await walk(DIST);
+  await assertIndexNotBundled(files);
   const html = files.filter((f) => f.endsWith('.html'));
   if (html.length === 0) fail('dist contains no HTML at all');
 

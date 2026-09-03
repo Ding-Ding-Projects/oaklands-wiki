@@ -1,4 +1,10 @@
 import { href } from '../lib/routes';
+// A NAMED import, so the bundler can drop everything else in the file. A default
+// import would pull all 549KB of entries into every page's bundle to read one
+// integer — and the search page fetches those at runtime precisely so that the
+// other 2,052 pages never pay for them.
+import { built as PAGE_COUNT } from '../../public/search-index.json';
+
 
 /**
  * The search that is on every page.
@@ -26,7 +32,7 @@ export function MasterSearch({ initialQuery = '' }: { initialQuery?: string }) {
           type="search"
           name="q"
           defaultValue={initialQuery}
-          placeholder="Search 2,051 pages…"
+          placeholder={`Search ${PAGE_COUNT.toLocaleString()} pages…`}
           autoComplete="off"
           enterKeyHint="search"
         />
