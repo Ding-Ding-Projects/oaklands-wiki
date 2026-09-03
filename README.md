@@ -103,33 +103,22 @@ no installed application, and that exemption is recorded in
 
 ## What it looks like
 
-Real captures from the live site, taken through an isolated headless browser at a
-390x844 phone viewport — not mockups, and not a narrowed desktop window.
+Real captures from the live site through an isolated headless browser at a 390x844 phone
+viewport — not mockups, and not a narrowed desktop window.
 
-<details open>
-<summary><strong>Home and About, on a phone</strong></summary>
+| Home | Category tiles | Browse |
+|---|---|---|
+| ![Home page: dark hero, article and category counts](evidence/phase-3/home-phone-dark.png) | ![Category tiles carrying real archived game art](evidence/phase-3/home-phone-tiles.png) | ![Browse: search with regex builder, and letter, category and type filters](evidence/phase-3/browse-phone.png) |
 
-| Home | About |
-|---|---|
-| ![Home page at 390x844, showing the category grid with material-tone accents](evidence/phase-1/home-phone-390.png) | ![About page at 390x844, showing provenance, licensing and non-affiliation](evidence/phase-1/about-phone-390.png) |
-
-Measured on the live site at that viewport, rather than asserted:
+Measured on the live site rather than asserted:
 
 | Property | Measured |
 |---|---|
-| Body text | 18px at 30.6px line height (1.7) |
-| Horizontal body overflow | none — `scrollWidth` equals `clientWidth` at 390px |
-| Category cards | 11, minimum height 56px |
-| Bottom navigation targets | 55px tall, pinned, covering no content |
-
-</details>
-
-> [!NOTE]
-> The full-page capture shows the bottom navigation bar apparently floating
-> mid-page. It is not a defect and was checked rather than assumed: with
-> `captureBeyondViewport`, a `position: sticky` element is rendered at its stuck
-> viewport position, which lands mid-image in a tall capture. Measured in the real
-> viewport the bar sits flush at the bottom and covers nothing.
+| Horizontal body overflow | none at 390px |
+| Category tiles with real art | 20 of 24 on the home page; 60 of 63 categories overall |
+| Articles with art | 885 of 1,063 |
+| Browse filtering | 1,063 rows narrow to 87 on "C", starting at Cactus |
+| Theme control | present and functional on every page, including the script-free article pages |
 
 ## Verification
 
