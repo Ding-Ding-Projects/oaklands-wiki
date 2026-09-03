@@ -23,7 +23,8 @@
     "check:wiki": "node scripts/check-wiki.mjs",
     "test:locks": "node scripts/test-locks.mjs",
     "test:robots": "node scripts/test-robots.mjs",
-    "test:logic": "node --experimental-strip-types scripts/test-logic-sim.mjs"
+    "test:logic": "node --experimental-strip-types scripts/test-logic-sim.mjs",
+    "test:schedule": "node --experimental-strip-types scripts/test-schedule.mjs"
   },
   "dependencies": {
     "node-html-parser": "^7.0.1",

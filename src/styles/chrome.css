@@ -353,3 +353,12 @@ blockquote { margin-block: var(--ok-space-3); }
   font-variant-numeric: tabular-nums;
   color: var(--ok-accent);
 }
+
+.ok-schedrule {
+  display: grid; gap: var(--ok-space-3);
+  padding: var(--ok-space-4);
+  margin-block-start: var(--ok-space-4);
+  border: var(--ok-border) solid var(--ok-rule);
+  border-radius: var(--ok-radius);
+  background: var(--ok-paper-sunken);
+}

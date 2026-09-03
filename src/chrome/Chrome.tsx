@@ -13,6 +13,8 @@ import { ElementMenu, applyElementAppearance } from './ElementMenu';
 import { SupportTickets } from './LockSurfaces';
 import { HistoryPanel } from './HistoryPanel';
 import { Authenticator } from './Authenticator';
+import { ScheduledSettings } from './ScheduledSettings';
+import { Converter } from './Converter';
 import { record, diffSettings } from '../lib/history';
 import { Narrator } from '../lib/narrator';
 
@@ -35,6 +37,9 @@ export function Chrome() {
   const [ticketsOpen, setTicketsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const [scheduleOpen, setScheduleOpen] = useState(false);
+  const [converterOpen, setConverterOpen] = useState(false);
+  const [scheduled, setScheduled] = useState<Partial<VisitorState> | null>(null);
   const stateRef = useRef(state);
   stateRef.current = state;
   const narrator = useMemo(() => new Narrator(() => stateRef.current), []);
@@ -57,9 +62,12 @@ export function Chrome() {
 
   useEffect(() => {
     if (!ready) return;
-    applyState(state, document.documentElement);
+    // The schedule overlays the base state rather than replacing it, so what is
+    // saved is always the visitor's own choice and turning every rule off gives
+    // back exactly what was there before.
+    applyState({ ...state, ...(scheduled ?? {}) }, document.documentElement);
     if (!saveState(state)) setStorageBlocked(true);
-  }, [state, ready]);
+  }, [state, scheduled, ready]);
 
   // Ctrl+Shift+F opens the palette. Not Ctrl+K: the contract names this key.
   useEffect(() => {
@@ -140,6 +148,12 @@ export function Chrome() {
         <button type="button" className="ok-chip" aria-haspopup="dialog" onClick={() => setAuthOpen(true)}>
           🔑 Codes
         </button>
+        <button type="button" className="ok-chip" aria-haspopup="dialog" onClick={() => setScheduleOpen(true)}>
+          🕒 Schedule
+        </button>
+        <button type="button" className="ok-chip" aria-haspopup="dialog" onClick={() => setConverterOpen(true)}>
+          ⇄ Convert
+        </button>
         <NotificationCentre notices={notices} onDismiss={(id) => setNotices((n) => n.filter((x) => x.id !== id))} />
       </div>
 
@@ -168,6 +182,12 @@ export function Chrome() {
       ) : null}
 
       {authOpen ? <Authenticator onClose={() => setAuthOpen(false)} /> : null}
+
+      {scheduleOpen ? (
+        <ScheduledSettings onApply={setScheduled} onClose={() => setScheduleOpen(false)} />
+      ) : null}
+
+      {converterOpen ? <Converter onClose={() => setConverterOpen(false)} /> : null}
 
       {ticketsOpen ? (
         <SupportTickets

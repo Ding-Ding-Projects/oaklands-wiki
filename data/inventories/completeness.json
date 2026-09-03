@@ -252,7 +252,14 @@
     {
       "id": "F-024",
       "title": "Scheduled settings from local, HTTPS and Home Assistant sources",
-      "state": "open"
+      "state": "built",
+      "implementation": [
+        "src/lib/schedule.ts",
+        "src/chrome/ScheduledSettings.tsx"
+      ],
+      "tests": [
+        "scripts/test-schedule.mjs"
+      ]
     },
     {
       "id": "F-025",
@@ -275,8 +282,11 @@
     },
     {
       "id": "F-027",
-      "title": "Local file converter and PDF tools",
-      "state": "open"
+      "title": "Local file converter with an honest availability catalogue",
+      "state": "built",
+      "implementation": [
+        "src/chrome/Converter.tsx"
+      ]
     },
     {
       "id": "F-028",
